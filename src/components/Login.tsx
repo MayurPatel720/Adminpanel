@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import "../css/Login.css"
+import "../css/Login.css";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useLoginQuery } from "../queries/authentication";
 const Login: React.FC = () => {
   const [checked1, setChecked1] = useState<boolean>(false);
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
- const check = () =>{
-  if("shaswat data check kare to"){
-    navigate("/main");
-  }
-  else{
-    navigate("/login");
-  }
- }
+  const { mutate: login, isPending: isLoginPending } = useLoginQuery();
+  const handleLoginSubmit = () => {
+    if (isLoginPending) return;
+    login({ email: "shashwatpatel04@gmail.com", password: "Skpatel@1203" });
+  };
+
+  const check = () => {
+    if ("shaswat data check kare to") {
+      navigate("/main");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <>
       <div className="main">
@@ -68,7 +74,10 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            <Button onClick={check}
+            <Button
+              // onClick={check}
+              disabled={isLoginPending}
+              onClick={handleLoginSubmit}
               label="Sign In"
               icon="pi pi-user"
               className="w-full"
