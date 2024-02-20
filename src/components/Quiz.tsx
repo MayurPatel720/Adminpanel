@@ -126,14 +126,16 @@ const Quiz: React.FC<QuizProps> = () => {
 
   const Submittodatabase = () => {
     let x = 0;
-    const toast = useRef<Toast>(null);
+    // const toast = useRef<Toast>(null);
     all.map((data, index) => {
       if (data.que == " " || data.opt.length == 0) {
         // toast.current.show({severity:'warn', summary: 'Warning', detail:'Question Not Added', life: 3000});
+        console.log('question or option is not added');
+        
         x = 1;
       }
       let y = 0;
-      data.opt.map((optdata, index) => {
+      data.opt.map((optdata, i) => {
         if (optdata.text == "") {
           console.log("option not added", index);
           x = 1;
