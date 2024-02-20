@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
+import { Toast } from 'primereact/toast';
 import "../css/quiz.css";
+import Mainlayout from "../layout/Mainlayout";
 
 interface QuizProps {}
 const Quiz: React.FC<QuizProps> = () => {
@@ -124,9 +126,10 @@ const Quiz: React.FC<QuizProps> = () => {
 
   const Submittodatabase = () => {
     let x = 0;
+    const toast = useRef<Toast>(null);
     all.map((data, index) => {
       if (data.que == " " || data.opt.length == 0) {
-        console.log("content not added", index);
+        // toast.current.show({severity:'warn', summary: 'Warning', detail:'Question Not Added', life: 3000});
         x = 1;
       }
       let y = 0;
@@ -147,7 +150,7 @@ const Quiz: React.FC<QuizProps> = () => {
     if (x == 0) console.log("all content added");
   };
   return (
-    <>
+    <Mainlayout>
       {flag == 0 && (
         <div className="quiz-container">
           <div
@@ -215,7 +218,7 @@ const Quiz: React.FC<QuizProps> = () => {
           </div>
         </div>
       )}
-    </>
+    </Mainlayout>
   );
 };
 
