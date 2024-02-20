@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <div className="container">
-        <span className="text-muted">FRONTEND TEAM IS BETTER</span>
+        <span className="text-muted">OUR TEAM IS BETTER</span>
       </div>
     </footer>
   );

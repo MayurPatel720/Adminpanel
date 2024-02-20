@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Kao from './components/Kao';
 import Maincom from './components/Maincom';
 import Quiz2 from './components/Quiz';
+import Feed from './components/Feed';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Maincom />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/main" element={<Maincom />} /> */}
+        <Route path="/Feed" element={<Feed />} />
+
         <Route path="/kao" element={<Kao />} />
         <Route path="/quiz" element={<Quiz2 />} />
       </Routes>
