@@ -4,6 +4,7 @@ import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { MenuItem } from 'primereact/menuitem';
 import { Avatar } from 'primereact/avatar';  
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 interface Item {
     label: string;
@@ -13,21 +14,24 @@ interface Item {
     template?: (item: MenuItem) => JSX.Element;
     items?: Item[];
     separator?: boolean;
+    command?: () => void; 
 }
 
 const TemplateDemo: React.FC = () => {
+    const navigate = useNavigate(); // Initialize navigate function
+
     const itemRenderer = (item: MenuItem) => (
         <a className="flex align-items-center p-menuitem-link">
             <span className={item.icon} />
             <span className="mx-2">{item.label}</span>
-
         </a>
     );
 
     const items: Item[] = [
         {
             label: 'Home',
-            icon: 'pi pi-home'
+            icon: 'pi pi-home',
+            command: () => navigate('/') 
         },
         {
             label: 'Features',
@@ -55,9 +59,6 @@ const TemplateDemo: React.FC = () => {
                     shortcut: '⌘+U',
                     template: itemRenderer
                 },
-                // {
-                //     separator: true
-                // },
                 {
                     label: 'Templates',
                     icon: 'pi pi-palette',
@@ -77,15 +78,16 @@ const TemplateDemo: React.FC = () => {
                     ]
                 }
             ]
-        },
-        
+        }
     ];
 
     const start = <img alt="logo" style={{marginLeft:"25px"}} src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/Baps_logo.svg/1200px-Baps_logo.svg.png" height="40" className="mr-2"></img>;
     const end = (
         <div className="flex align-items-center gap-2">
             <InputText placeholder="Search" type="text" className="w-8rem sm:w-auto" />
-            <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" />
+            <Avatar onClick={()=>{
+                navigate("/login")
+            }} image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" />
         </div>
     );
 

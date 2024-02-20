@@ -13,14 +13,7 @@ export default function BasicDemo() {
                 {
                     label: 'Make New Quiz',
                     icon: 'pi pi-file',
-                    url: '/kao',
-                    // items: [
-                    //     {
-                    //         label: 'Clients',
-                    //         icon: 'pi pi-users',
-                    //         url: '/kao',
-                    //     }
-                    // ]
+                    command: () => navigate('/kao')
                 },
                 {
                     label: 'See Past Quizes',
@@ -72,14 +65,9 @@ export default function BasicDemo() {
         }
     ];
 
-//  url: 'https://primereact.org' 
-
     return (
         <div className="card">
-         <PanelMenu onClick={() => {
-                const clickedItem = items[0];
-                console.log(clickedItem.url);
-            }} model={items} className="w-full md:w-18rem" />
+            <PanelMenu model={items} className="w-full md:w-18rem" />
         </div>
     );
 }

@@ -11,7 +11,7 @@ const Login: React.FC = () => {
 
  const check = () =>{
   if("shaswat data check kare to"){
-    navigate("/main");
+    navigate("/");
   }
   else{
     navigate("/login");
