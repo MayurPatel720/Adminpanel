@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import Nav from "../components/Nav";
 import Sidebar from "../components/Sidebar";
 import "../css/Mainlayout.css"; // Import your CSS file for styling
+import Footer from "../components/Footer";
 
 interface MyLayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ const MyLayout: React.FC<MyLayoutProps> = ({ children }) => {
         <Sidebar />
         <main className="my-layout-main">{children}</main>
       </div>
+      <Footer />
     </div>
   );
 };
