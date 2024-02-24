@@ -1,22 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import "../css/Login.css"
+import "../css/Login.css";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useLoginQuery } from "../queries/authentication";
 const Login: React.FC = () => {
   const [checked1, setChecked1] = useState<boolean>(false);
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
- const check = () =>{
-  if("shaswat data check kare to"){
-    navigate("/");
-  }
-  else{
-    navigate("/login");
-  }
- }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const {
+    mutate: login,
+    isPending: isLoginPending,
+    isSuccess: isLoginSuccess,
+  } = useLoginQuery();
+  const handleLoginSubmit = () => {
+    if (isLoginPending) return;
+    login({ email: email, password: password });
+    // login({ email: "shashwatpatel04@gmail.com", password: "Skpatel@1203" });
+  };
+
+  useEffect(() => {
+    if (isLoginSuccess) {
+      console.log("opop");
+      navigate("/");
+    }
+  }, [isLoginSuccess]);
+
   return (
     <>
       <div className="main">
@@ -42,6 +56,7 @@ const Login: React.FC = () => {
               type="text"
               placeholder="Email address"
               className="w-full mb-3"
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <label
@@ -54,6 +69,7 @@ const Login: React.FC = () => {
               type="password"
               placeholder="Password"
               className="w-full mb-3"
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <div className="flex align-items-center justify-content-between mb-6">
@@ -68,7 +84,9 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            <Button onClick={check}
+            <Button
+              onClick={handleLoginSubmit}
+              disabled={isLoginPending}
               label="Sign In"
               icon="pi pi-user"
               className="w-full"

@@ -4,12 +4,14 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
 
 interface QuizProps {}
 const Quiz: React.FC<QuizProps> = () => {
+  const toast = useRef<Toast>(null);
+
   const [all, setAll] = useState<
     { que: string; opt: { text: string; isAnswer: Boolean }[] }[]
   >([]);
@@ -19,7 +21,7 @@ const Quiz: React.FC<QuizProps> = () => {
   const [starttime, setStartTime] = useState<Date | null>(null);
   const [endtime, setEndTime] = useState<Date | null>(null);
   const Generateque = () => {
-    if(numQue=="" || starttime==null || endtime==null)  return null;
+    if (numQue == "" || starttime == null || endtime == null) return null;
     const x = parseInt(numQue);
     const newArray = Array.from({ length: x }, () => ({
       que: "",
@@ -126,12 +128,22 @@ const Quiz: React.FC<QuizProps> = () => {
 
   const Submittodatabase = () => {
     let x = 0;
-    // const toast = useRef<Toast>(null);
+    toast?.current?.show({
+      severity: "warn",
+      summary: "Warning",
+      detail: "Question Not Added",
+      life: 3000,
+    });
     all.map((data, index) => {
       if (data.que == " " || data.opt.length == 0) {
-        // toast.current.show({severity:'warn', summary: 'Warning', detail:'Question Not Added', life: 3000});
-        console.log('question or option is not added');
-        
+        toast?.current?.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Question Not Added",
+          life: 3000,
+        });
+        console.log("question or option is not added");
+
         x = 1;
       }
       let y = 0;
@@ -173,8 +185,8 @@ const Quiz: React.FC<QuizProps> = () => {
                 setNumque(e.target.value);
               }}
             />
-            <div style={{display:'flex',margin:"20px"}}>
-              <div style={{marginRight:"50px"}}>
+            <div style={{ display: "flex", margin: "20px" }}>
+              <div style={{ marginRight: "50px" }}>
                 <label htmlFor="question">Start Time</label>
                 <Calendar
                   value={starttime}

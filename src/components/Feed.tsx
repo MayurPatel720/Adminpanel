@@ -1,20 +1,84 @@
 import Mainlayout from "../layout/Mainlayout";
 import "../css/Feed.css";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Toast } from "primereact/toast";
 import { FileUpload } from "primereact/fileupload";
+import { Button } from "primereact/button";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { FeedParams, useCreateFeedQuery } from "../queries/feed";
 
 export default function FloatLabelDemo() {
-  const [value1, setValue1] = useState<string>("");
-  const [value10, setValue10] = useState<string>("");
-  const [value12, setValue12] = useState<string>("");
-  const [value5, setValue5] = useState<any>(null);
-  const level = [{ name: "level 1" }, { name: "level 2" }, { name: "level 3" }];
+  const {
+    mutate: createFeed,
+    isPending: isFeedCreatePending,
+    isSuccess: isFeedCreateSuccess,
+  } = useCreateFeedQuery();
+
+  const accept = () => {
+    toast.current?.show({
+      severity: "info",
+      summary: "Confirmed",
+      detail: "Feed Posted",
+      life: 3000,
+    });
+  };
+
+  const reject = () => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Rejected",
+      detail: "You have rejected",
+      life: 3000,
+    });
+  };
+
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [selectedLevel, setSelectedLevel] = useState<{
+    option: "";
+    value: "";
+  }>({
+    option: "",
+    value: "",
+  });
+  const [expiresAt, setExpiresAt] = useState<any>(null);
+  const level = [
+    { name: "Purple", value: "p" },
+    { name: "Saffrom", value: "s" },
+    { name: "Marron", value: "m" },
+  ];
   const toast = useRef<Toast | null>(null);
+  const confirm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    confirmPopup({
+      target: event.currentTarget,
+      message: "Are you sure you want to proceed?",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("expires_at", expiresAt);
+        formData.append("level", selectedLevel.value);
+        formData.append("users", JSON.stringify([])); // Convert to string if required
+
+        // Create FeedParams object from FormData
+        const feedParams: FeedParams = {
+          title: formData.get("title") as string,
+          description: formData.get("description") as string,
+          expires_at: formData.get("expires_at") as string,
+          level: formData.get("level") as string,
+          users: JSON.parse(formData.get("users") as string) as string[],
+        };
+
+        createFeed(feedParams);
+      },
+      reject,
+    });
+  };
 
   const onUpload = () => {
     toast.current?.show({
@@ -35,8 +99,8 @@ export default function FloatLabelDemo() {
               <InputText
                 type="text"
                 id="title"
-                value={value1}
-                onChange={(e) => setValue1(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
               <label htmlFor="title">Title</label>
             </span>
@@ -50,8 +114,8 @@ export default function FloatLabelDemo() {
                 style={{ width: "650px", height: "150px" }}
                 id="description"
                 rows={3}
-                value={value12}
-                onChange={(e) => setValue12(e.target.value)}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               ></InputTextarea>
               <label htmlFor="description">Description</label>
             </span>
@@ -61,8 +125,8 @@ export default function FloatLabelDemo() {
               <Dropdown
                 id="dropdown"
                 options={level}
-                value={value10}
-                onChange={(e) => setValue10(e.value)}
+                value={selectedLevel}
+                onChange={(e) => setSelectedLevel(e.value)}
                 optionLabel="name"
               ></Dropdown>
               <label htmlFor="dropdown">Dropdown</label>
@@ -72,8 +136,8 @@ export default function FloatLabelDemo() {
             <span className="p-float-label">
               <Calendar
                 inputId="expiry"
-                value={value5}
-                onChange={(e) => setValue5(e.value ?? "")}
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.value ?? "")}
               ></Calendar>
               <label htmlFor="expiry">Expiry at</label>
             </span>
@@ -92,14 +156,16 @@ export default function FloatLabelDemo() {
                 />
               </div>
             </div>
+            <div className="confirm_card">
+              <ConfirmPopup />
+              <Button
+                onClick={confirm}
+                icon="pi pi-check"
+                label="Confirm"
+                disabled={isFeedCreatePending}
+              ></Button>
+            </div>
           </div>
-
-          {/* <div className="mobile-preview">
-        <h3>Mobile Preview</h3>
-        <div className="preview-title">{value1}</div>
-        <div className="preview-description">{value12}</div>
-        {/* You can add a preview for uploaded photos here */}
-          {/* </div> */}
         </div>
       </Mainlayout>
     </>
