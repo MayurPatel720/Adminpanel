@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
 
@@ -18,8 +18,10 @@ const Quiz: React.FC<QuizProps> = () => {
   const [flag, setFlag] = useState(0);
   const [starttime, setStartTime] = useState<Date | null>(null);
   const [endtime, setEndTime] = useState<Date | null>(null);
+  const toast = useRef<Toast | null>(null);
+  <Toast ref={toast} />;
   const Generateque = () => {
-    if(numQue=="" || starttime==null || endtime==null)  return null;
+    if (numQue == "" || starttime == null || endtime == null) return null;
     const x = parseInt(numQue);
     const newArray = Array.from({ length: x }, () => ({
       que: "",
@@ -61,7 +63,6 @@ const Quiz: React.FC<QuizProps> = () => {
       </div>
     ));
   };
-
   const disQuestions = () => {
     const t = parseInt(numQue);
     const buttons = [];
@@ -126,30 +127,65 @@ const Quiz: React.FC<QuizProps> = () => {
 
   const Submittodatabase = () => {
     let x = 0;
-    // const toast = useRef<Toast>(null);
-    all.map((data, index) => {
-      if (data.que == " " || data.opt.length == 0) {
-        // toast.current.show({severity:'warn', summary: 'Warning', detail:'Question Not Added', life: 3000});
-        console.log('question or option is not added');
-        
+    for (let index = 0; index < all.length; index++) {
+      const data = all[index];
+
+      if (data.que === " " || data.opt.length < 2) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: `Question or All Option not Added in ${index+1}'s Question`,
+          life: 3000,
+        });
         x = 1;
+        return;
       }
+
       let y = 0;
-      data.opt.map((optdata, i) => {
-        if (optdata.text == "") {
-          console.log("option not added", index);
+
+      for (let i = 0; i < data.opt.length; i++) {
+        const optdata = data.opt[i];
+
+        if (optdata.text === "") {
+          console.log(toast.current);
+          toast.current?.show({
+            severity: "error",
+            summary: "Error",
+            detail: `Option is Empty in ${index+1}'s Question`,
+            life: 3000,
+          });
+          // console.log("In ", index, "'s Question ", i, "Option is Empty");
           x = 1;
+          return;
         }
-        if (optdata.isAnswer == true) {
+
+        if (optdata.isAnswer === true) {
           y = 1;
         }
-      });
-      if (y == 0) {
-        console.log("answer not selected");
-        x = 1;
       }
-    });
-    if (x == 0) console.log("all content added");
+
+      if (y === 0 && x === 0) {
+        // console.log("Correct option is not Selected in ", index);
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: `Correct option is not Selected in ${index+1}'s Question`,
+          life: 3000,
+        });
+        x = 1;
+        return;
+      }
+    }
+
+    if (x === 0) {
+      toast.current?.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Quiz Added Successfully",
+        life: 3000,
+      });
+      // console.log("Quiz added Successfully");
+    }
   };
   return (
     <Mainlayout>
@@ -173,8 +209,8 @@ const Quiz: React.FC<QuizProps> = () => {
                 setNumque(e.target.value);
               }}
             />
-            <div style={{display:'flex',margin:"20px"}}>
-              <div style={{marginRight:"50px"}}>
+            <div style={{ display: "flex", margin: "20px" }}>
+              <div style={{ marginRight: "50px" }}>
                 <label htmlFor="question">Start Time</label>
                 <Calendar
                   value={starttime}
@@ -216,6 +252,7 @@ const Quiz: React.FC<QuizProps> = () => {
               justifyContent: "space-evenly",
             }}
           >
+            <Toast ref={toast}></Toast>
             <Button onClick={Submittodatabase}>SUBMIT</Button>
           </div>
         </div>
