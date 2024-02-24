@@ -10,16 +10,6 @@ const Login: React.FC = () => {
   const [checked1, setChecked1] = useState<boolean>(false);
   const navigate = useNavigate();
 
-<<<<<<< HEAD
- const check = () =>{
-  if("shaswat data check kare to"){
-    navigate("/");
-  }
-  else{
-    navigate("/login");
-  }
- }
-=======
   const { mutate: login, isPending: isLoginPending } = useLoginQuery();
   const handleLoginSubmit = () => {
     if (isLoginPending) return;
@@ -33,7 +23,6 @@ const Login: React.FC = () => {
       navigate("/login");
     }
   };
->>>>>>> 6526f81cc46f2f2d388ce3e940f7b004a3f009f3
   return (
     <>
       <div className="main">

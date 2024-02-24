@@ -3,7 +3,8 @@ import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../contants";
 
 const apiClient = axios.create({
-  baseURL: "http://103.26.48.209:3001/",
+  // baseURL: "http://103.26.48.209:3001/",
+  baseURL: "http://192.168.113.4:3000/",
 });
 
 apiClient.interceptors.request.use(

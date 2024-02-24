@@ -7,40 +7,41 @@ import { Calendar } from "primereact/calendar";
 import { Toast } from "primereact/toast";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
+import { AddQuiz } from "../queries/authentication";
 
 interface QuizProps {}
+
 const Quiz: React.FC<QuizProps> = () => {
   const [all, setAll] = useState<
-    { que: string; opt: { text: string; isAnswer: Boolean }[] }[]
+    { question: string; options: { value: string; isAnswer: boolean }[] }[]
   >([]);
   const [numQue, setNumque] = useState("");
   const [curr, setCurr] = useState(1);
   const [flag, setFlag] = useState(0);
-  const [starttime, setStartTime] = useState<Date | null>(null);
-  const [endtime, setEndTime] = useState<Date | null>(null);
+  const [starttime, setStartTime] = useState<Date>();
+  const [endtime, setEndTime] = useState<Date>();
   const toast = useRef<Toast | null>(null);
-  <Toast ref={toast} />;
+  const {mutate: quizadd, isPending: isQuizPending, isSuccess:isQuizSuccess } = AddQuiz();
+
   const Generateque = () => {
-    if (numQue == "" || starttime == null || endtime == null) return null;
+    if (numQue === "" || starttime === null || endtime === null) return null;
     const x = parseInt(numQue);
     const newArray = Array.from({ length: x }, () => ({
-      que: "",
-      opt: [],
+      question: "",
+      options: [],
     }));
-    // console.log(newArray);
     setFlag(1);
     setAll(newArray);
-    // console.log(all);
   };
   const renderOptions = () => {
-    return all[curr - 1]?.opt.map((option, index) => (
+    return all[curr - 1]?.options.map((option, index) => (
       <div className="option" key={index}>
         <label htmlFor={`option${index + 1}`}>Option {index + 1}:</label>
         <div className="flex align-items-center">
           <Checkbox
             onChange={() => {
               const updatedAll = [...all];
-              updatedAll[curr - 1].opt[index].isAnswer = !option.isAnswer;
+              updatedAll[curr - 1].options[index].isAnswer = !option.isAnswer;
               setAll(updatedAll);
             }}
             checked={!!option.isAnswer}
@@ -52,10 +53,10 @@ const Quiz: React.FC<QuizProps> = () => {
             id={`option${index + 1}`}
             className="p-inputtext"
             placeholder={`Enter the value of option ${index + 1}`}
-            value={option.text}
+            value={option.value}
             onChange={(e) => {
               const updatedAll = [...all];
-              updatedAll[curr - 1].opt[index].text = e.target.value;
+              updatedAll[curr - 1].options[index].value = e.target.value;
               setAll(updatedAll);
             }}
           />
@@ -84,15 +85,13 @@ const Quiz: React.FC<QuizProps> = () => {
   const handleAddOption = () => {
     const updatedAll = [...all];
     updatedAll[curr - 1] = {
-      que: updatedAll[curr - 1]?.que || "",
-      opt: updatedAll[curr - 1]?.opt || [],
+      question: updatedAll[curr - 1]?.question || "",
+      options: updatedAll[curr - 1]?.options || [],
     };
-
-    updatedAll[curr - 1].opt.push({
-      text: "",
+    updatedAll[curr - 1].options.push({
+      value: "",
       isAnswer: false,
     });
-
     setAll(updatedAll);
   };
   const showContant = () => {
@@ -105,14 +104,14 @@ const Quiz: React.FC<QuizProps> = () => {
             rows={5}
             cols={100}
             className="p-inputtextarea"
-            value={all[curr - 1]?.que || ""}
+            value={all[curr - 1]?.question || ""}
             onChange={(e) => {
               const updatedAll = [...all];
               updatedAll[curr - 1] = updatedAll[curr - 1] || {
-                que: "",
-                opt: { text: "", isAnswer: false },
+                question: "",
+                options: [{ value: "", isAnswer: false }],
               };
-              updatedAll[curr - 1].que = e.target.value;
+              updatedAll[curr - 1].question = e.target.value;
               setAll(updatedAll);
             }}
           />
@@ -130,11 +129,11 @@ const Quiz: React.FC<QuizProps> = () => {
     for (let index = 0; index < all.length; index++) {
       const data = all[index];
 
-      if (data.que === " " || data.opt.length < 2) {
+      if (data.question === "" || data.options.length < 2) {
         toast.current?.show({
           severity: "error",
           summary: "Error",
-          detail: `Question or All Option not Added in ${index+1}'s Question`,
+          detail: `Question or All Option not Added in ${index + 1}'s Question`,
           life: 3000,
         });
         x = 1;
@@ -143,18 +142,16 @@ const Quiz: React.FC<QuizProps> = () => {
 
       let y = 0;
 
-      for (let i = 0; i < data.opt.length; i++) {
-        const optdata = data.opt[i];
+      for (let i = 0; i < data.options.length; i++) {
+        const optdata = data.options[i];
 
-        if (optdata.text === "") {
-          console.log(toast.current);
+        if (optdata.value === "") {
           toast.current?.show({
             severity: "error",
             summary: "Error",
-            detail: `Option is Empty in ${index+1}'s Question`,
+            detail: `Option is Empty in ${index + 1}'s Question`,
             life: 3000,
           });
-          // console.log("In ", index, "'s Question ", i, "Option is Empty");
           x = 1;
           return;
         }
@@ -165,11 +162,10 @@ const Quiz: React.FC<QuizProps> = () => {
       }
 
       if (y === 0 && x === 0) {
-        // console.log("Correct option is not Selected in ", index);
         toast.current?.show({
           severity: "error",
           summary: "Error",
-          detail: `Correct option is not Selected in ${index+1}'s Question`,
+          detail: `Correct option is not Selected in ${index + 1}'s Question`,
           life: 3000,
         });
         x = 1;
@@ -178,18 +174,30 @@ const Quiz: React.FC<QuizProps> = () => {
     }
 
     if (x === 0) {
-      toast.current?.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Quiz Added Successfully",
-        life: 3000,
+      if(isQuizPending) return;
+      if (!starttime || !endtime) {
+        return;
+      } 
+      quizadd({
+        title:"new one",
+        start_time:starttime.toISOString(),
+        end_time:endtime.toISOString(),
+        questions:all,
       });
-      // console.log("Quiz added Successfully");
+      if(isQuizSuccess){
+        toast.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Quiz Added Successfully",
+          life: 3000,
+        });
+      }
     }
   };
+
   return (
     <Mainlayout>
-      {flag == 0 && (
+      {flag === 0 && (
         <div className="quiz-container">
           <div
             style={{
@@ -215,7 +223,7 @@ const Quiz: React.FC<QuizProps> = () => {
                 <Calendar
                   value={starttime}
                   onChange={(e) => {
-                    const temp = (e.value as Date) || null; // Use e.value to get the selected date/time
+                    const temp = (e.value as Date) || null;
                     setStartTime(temp);
                   }}
                   showTime
@@ -227,7 +235,7 @@ const Quiz: React.FC<QuizProps> = () => {
                 <Calendar
                   value={endtime}
                   onChange={(e) => {
-                    const temp = (e.value as Date) || null; // Use e.value to get the selected date/time
+                    const temp = (e.value as Date) || null;
                     setEndTime(temp);
                   }}
                   showTime
@@ -241,7 +249,7 @@ const Quiz: React.FC<QuizProps> = () => {
           </div>
         </div>
       )}
-      {flag == 1 && (
+      {flag === 1 && (
         <div className="quiz-container">
           <div>{disQuestions()}</div>
           <div>{showContant()}</div>
