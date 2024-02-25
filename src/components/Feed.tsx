@@ -1,6 +1,6 @@
 import Mainlayout from "../layout/Mainlayout";
 import "../css/Feed.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
@@ -10,14 +10,18 @@ import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { FeedParams, useCreateFeedQuery } from "../queries/feed";
+// import { Button, Space, Upload } from "antd";
+// import { UploadOutlined } from "@ant-design/icons";
 
 export default function FloatLabelDemo() {
+  const handleClick = () => {
+    console.log("asas");
+  };
   const {
     mutate: createFeed,
     isPending: isFeedCreatePending,
     isSuccess: isFeedCreateSuccess,
   } = useCreateFeedQuery();
-
   const accept = () => {
     toast.current?.show({
       severity: "info",
@@ -38,18 +42,13 @@ export default function FloatLabelDemo() {
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [selectedLevel, setSelectedLevel] = useState<{
-    option: "";
-    value: "";
-  }>({
-    option: "",
-    value: "",
-  });
+  const [selectedLevel, setSelectedLevel] = useState<string>("");
   const [expiresAt, setExpiresAt] = useState<any>(null);
+  const [files, setFiles] = useState<any>(null);
   const level = [
-    { name: "Purple", value: "p" },
-    { name: "Saffrom", value: "s" },
-    { name: "Marron", value: "m" },
+    { option: "Purple", value: "p" },
+    { option: "Saffrom", value: "s" },
+    { option: "Marron", value: "m" },
   ];
   const toast = useRef<Toast | null>(null);
   const confirm = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -58,22 +57,15 @@ export default function FloatLabelDemo() {
       message: "Are you sure you want to proceed?",
       icon: "pi pi-exclamation-triangle",
       accept: () => {
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("expires_at", expiresAt);
-        formData.append("level", selectedLevel.value);
-        formData.append("users", JSON.stringify([])); // Convert to string if required
-
-        // Create FeedParams object from FormData
         const feedParams: FeedParams = {
-          title: formData.get("title") as string,
-          description: formData.get("description") as string,
-          expires_at: formData.get("expires_at") as string,
-          level: formData.get("level") as string,
-          users: JSON.parse(formData.get("users") as string) as string[],
+          title: title,
+          description: description,
+          expires_at: expiresAt,
+          level: selectedLevel,
+          users: ["650f4b1b90a4d78b8176b9a4"],
+          FeedImgVi: files,
         };
-
+        console.log(feedParams, selectedLevel);
         createFeed(feedParams);
       },
       reject,
@@ -81,6 +73,10 @@ export default function FloatLabelDemo() {
   };
 
   const onUpload = () => {
+    // console.log("amakmsakmsakmsk");
+
+    const abc = document.getElementsByName("demo[]");
+    console.log(abc);
     toast.current?.show({
       severity: "info",
       summary: "Success",
@@ -126,8 +122,12 @@ export default function FloatLabelDemo() {
                 id="dropdown"
                 options={level}
                 value={selectedLevel}
-                onChange={(e) => setSelectedLevel(e.value)}
-                optionLabel="name"
+                onChange={(e) => {
+                  console.log(e, e.value);
+
+                  setSelectedLevel(e.value);
+                }}
+                optionLabel="option"
               ></Dropdown>
               <label htmlFor="dropdown">Dropdown</label>
             </span>
@@ -148,11 +148,14 @@ export default function FloatLabelDemo() {
               <div className="feed_card">
                 <FileUpload
                   name="demo[]"
-                  url="/api/upload"
+                  url="api/svfsdv"
                   onUpload={onUpload}
                   multiple
                   accept="image/*"
                   maxFileSize={1000000}
+                  onSelect={(e) => {
+                    setFiles(e.files);
+                  }}
                 />
               </div>
             </div>
