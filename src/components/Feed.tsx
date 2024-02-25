@@ -10,8 +10,6 @@ import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { FeedParams, useCreateFeedQuery } from "../queries/feed";
-// import { Button, Space, Upload } from "antd";
-// import { UploadOutlined } from "@ant-design/icons";
 
 export default function FloatLabelDemo() {
   const handleClick = () => {
@@ -43,7 +41,7 @@ export default function FloatLabelDemo() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [selectedLevel, setSelectedLevel] = useState<string>("");
-  const [expiresAt, setExpiresAt] = useState<any>(null);
+  const [expiresAt, setExpiresAt] = useState<Date | null>(null);
   const [files, setFiles] = useState<any>(null);
   const level = [
     { option: "Purple", value: "p" },
@@ -60,7 +58,7 @@ export default function FloatLabelDemo() {
         const feedParams: FeedParams = {
           title: title,
           description: description,
-          expires_at: expiresAt,
+          expires_at: expiresAt ? expiresAt.toISOString() : "",
           level: selectedLevel,
           users: ["650f4b1b90a4d78b8176b9a4"],
           FeedImgVi: files,
@@ -134,11 +132,11 @@ export default function FloatLabelDemo() {
           </div>
           <div className="field col-12 md:col-4">
             <span className="p-float-label">
-              <Calendar
-                inputId="expiry"
-                value={expiresAt}
-                onChange={(e) => setExpiresAt(e.value ?? "")}
-              ></Calendar>
+            <Calendar
+  inputId="expiry"
+  value={expiresAt}
+  onChange={(e) => setExpiresAt(e.value as Date)}
+></Calendar>
               <label htmlFor="expiry">Expiry at</label>
             </span>
           </div>

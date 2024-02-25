@@ -21,13 +21,6 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   users,
   FeedImgVi,
 }: FeedParams) => {
-  // const body = {
-  //   ...(title && { title }),
-  //   ...(description && { description }),
-  //   ...(expires_at && { expires_at }),
-  //   ...(level && { level }),
-  //   ...(users && { users }),
-  // };
 
   const formData = new FormData();
   formData.append("title", title);
@@ -39,7 +32,6 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
     formData.append("FeedImgVi", file, file.name);
   });
 
-  // console.log('Sending data to API:', body);
   const res = await apiClient.post("api/feed/insertFeed", formData);
   console.log("done");
   return res.data;

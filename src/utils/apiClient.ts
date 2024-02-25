@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 const apiClient = axios.create({
   // baseURL: "http://192.168.5.70:3001/",
   // baseURL: "http://103.26.48.209:3001/",
-  baseURL: "http://192.168.113.4:3000/",
+  baseURL: "http://192.168.137.1:3000/",
 });
 
 apiClient.interceptors.request.use(
@@ -28,8 +28,9 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     try {
-      const isGenerateRefreshTokenUrl =
-        error.request.responseURL.includes("getAccessAndRefreshToken");
+      const isGenerateRefreshTokenUrl = error.request.responseURL.includes(
+        "getAccessAndRefreshToken"
+      );
       // if generate refreshtoken api send 401 then redirect to the login page and clear all the tokens
       if (isGenerateRefreshTokenUrl && error.response.status === 401) {
         window.location.href = "/login";
@@ -45,9 +46,12 @@ apiClient.interceptors.response.use(
           window.location.href = "/login";
           return Promise.reject(error);
         } else if (authorization.includes(token)) {
-          const res = await apiClient.post("api/user/getAccessAndRefreshToken", {
-            refreshToken: refToken,
-          });
+          const res = await apiClient.post(
+            "api/user/getAccessAndRefreshToken",
+            {
+              refreshToken: refToken,
+            }
+          );
 
           if (res.status === 201) {
             const access = res.data.data.accessToken;

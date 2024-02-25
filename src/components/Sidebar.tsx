@@ -34,14 +34,15 @@ export default function BasicDemo() {
         {
           label: "Create Post",
           icon: "pi pi-cloud-upload",
-          command: ()=>navigate("/Feed")
+          command: () => navigate("/Feed/Create"),
         },
         {
           label: "Delete",
           icon: "pi pi-times",
+          command: () => navigate("/Feed/delete"),
         },
         {
-          label: "Sync",
+          label: "Edit",
           icon: "pi pi-refresh",
         },
       ],
