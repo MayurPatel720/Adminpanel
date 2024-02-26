@@ -6,7 +6,7 @@ import Maincom from "./components/Maincom";
 import Quiz2 from "./components/Quiz";
 import Feed from "./components/Feed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DeleteFeed from "./components/DeleteFeed";
+import AllFeed from "./components/AllFeed";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<Maincom />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Feed/Create" element={<Feed />} />
-          <Route path="/Feed/delete" element={<DeleteFeed />} />
+          <Route path="/Feed/all" element={<AllFeed />} />
           <Route path="/kao" element={<Kao />} />
           <Route path="/quiz" element={<Quiz2 />} />
         </Routes>

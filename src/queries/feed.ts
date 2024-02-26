@@ -1,9 +1,6 @@
-
 import { useMutation, MutationFunction } from "@tanstack/react-query";
 import apiClient from "../utils/apiClient";
-import { setLocalStorage } from "../utils/localStorage";
 import { ApiResponse } from "../utils/apiResponse";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 export interface FeedParams {
   title: string;
   description: string;
@@ -21,7 +18,6 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   users,
   FeedImgVi,
 }: FeedParams) => {
-
   const formData = new FormData();
   formData.append("title", title);
   formData.append("description", description);

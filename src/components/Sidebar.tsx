@@ -39,7 +39,7 @@ export default function BasicDemo() {
         {
           label: "Delete",
           icon: "pi pi-times",
-          command: () => navigate("/Feed/delete"),
+          command: () => navigate("/Feed/all"),
         },
         {
           label: "Edit",
