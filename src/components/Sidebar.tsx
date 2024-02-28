@@ -44,6 +44,7 @@ export default function BasicDemo() {
         {
           label: "Edit",
           icon: "pi pi-refresh",
+          command: () => navigate("/Feed/Edit"),
         },
       ],
     },

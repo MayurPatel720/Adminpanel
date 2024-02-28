@@ -1,11 +1,9 @@
-import {
-  useMutation,
-  MutationFunction,
-  useQuery,
-  QueryFunction,
-} from "@tanstack/react-query";
+// Import necessary dependencies
+import { useMutation, MutationFunction } from "@tanstack/react-query";
 import apiClient from "../utils/apiClient";
 import { ApiResponse } from "../utils/apiResponse";
+
+// Define the interface for feed parameters
 export interface FeedParams {
   title: string;
   description: string;
@@ -15,15 +13,8 @@ export interface FeedParams {
   FeedImgVi: Array<File>;
 }
 
-const alluser: QueryFunction<
-  ApiResponse<Array<any>>,
-  Array<String>,
-  any
-> = async () => {
-  const res = await apiClient.get("api/user/allUsers");
-  return res.data;
-};
-const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
+// Define the mutation function for editing feed
+const editFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   title,
   description,
   expires_at,
@@ -31,28 +22,29 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   users,
   FeedImgVi,
 }: FeedParams) => {
+  // Create a new FormData object to send multipart form data
   const formData = new FormData();
+
+  // Append parameters to the FormData object
   formData.append("title", title);
   formData.append("description", description);
   formData.append("expires_at", expires_at);
   formData.append("level", level);
   formData.append("users", JSON.stringify(users));
+
+  // Append each file to the FormData object
   Array.from(FeedImgVi).forEach((file) => {
     formData.append("FeedImgVi", file, file.name);
   });
 
-  const res = await apiClient.post("api/feed/insertFeed", formData);
-  console.log("done");
+  // Send a POST request to the API endpoint for editing feed
+  const res = await apiClient.post("api/feed/editFeed", formData);
+  console.log("Feed edited successfully");
   return res.data;
 };
 
-export const useCreateFeedQuery = () =>
+// Define the custom hook for using the edit feed mutation
+export const useEditFeedQuery = () =>
   useMutation({
-    mutationFn: createFeed,
-  });
-
-export const useGetalluser = () =>
-  useQuery({
-    queryKey: ["allusers"],
-    queryFn: alluser,
+    mutationFn: editFeed,
   });
