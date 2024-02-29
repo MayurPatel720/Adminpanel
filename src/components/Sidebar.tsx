@@ -18,12 +18,7 @@ export default function BasicDemo() {
         {
           label: "See Past Quizes",
           icon: "pi pi-image",
-          items: [
-            {
-              label: "Month",
-              icon: "pi pi-image",
-            },
-          ],
+          command: () => navigate("/AllQuiz"),
         },
       ],
     },
@@ -34,7 +29,7 @@ export default function BasicDemo() {
         {
           label: "Create Post",
           icon: "pi pi-cloud-upload",
-          command: ()=>navigate("/Feed")
+          command: () => navigate("/Feed"),
         },
         {
           label: "Delete",

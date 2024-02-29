@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -8,10 +8,12 @@ import { Toast } from "primereact/toast";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
 import { AddQuiz } from "../queries/authentication";
+import { useNavigate } from "react-router-dom";
 
 interface QuizProps {}
 
 const Quiz: React.FC<QuizProps> = () => {
+  const navigate = useNavigate();
   const [all, setAll] = useState<
     { question: string; options: { value: string; isAnswer: boolean }[] }[]
   >([]);
@@ -21,16 +23,36 @@ const Quiz: React.FC<QuizProps> = () => {
   const [starttime, setStartTime] = useState<Date>();
   const [endtime, setEndTime] = useState<Date>();
   const toast = useRef<Toast | null>(null);
-  const {mutate: quizadd, isPending: isQuizPending, isSuccess:isQuizSuccess } = AddQuiz();
+  const [title, setTitle] = useState("");
+  const {
+    mutate: quizadd,
+    isPending: isQuizPending,
+    isSuccess: isQuizSuccess,
+  } = AddQuiz();
 
   const Generateque = () => {
-    if (numQue === "" || starttime === null || endtime === null) return null;
+    if (numQue === "" || !title || !starttime || !endtime) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Add All Details",
+        life: 3000,
+      });
+      return null;
+    }
     const x = parseInt(numQue);
+
     const newArray = Array.from({ length: x }, () => ({
       question: "",
       options: [],
     }));
     setFlag(1);
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Quiz generated Successfully",
+      life: 3000,
+    });
     setAll(newArray);
   };
   const renderOptions = () => {
@@ -94,6 +116,16 @@ const Quiz: React.FC<QuizProps> = () => {
     });
     setAll(updatedAll);
   };
+  const handleDleleteOption = () => {
+    const updatedAll = [...all];
+    updatedAll[curr - 1] = {
+      question: updatedAll[curr - 1]?.question || "",
+      options: updatedAll[curr - 1]?.options || [],
+    };
+    if (updatedAll[curr - 1].options.length <= 0) return;
+    updatedAll[curr - 1].options.pop();
+    setAll(updatedAll);
+  };
   const showContant = () => {
     return (
       <div>
@@ -118,12 +150,33 @@ const Quiz: React.FC<QuizProps> = () => {
         </div>
         <div className="options-container">
           {renderOptions()}
-          <Button label="Add Option" onClick={handleAddOption} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button label="Add Option" onClick={handleAddOption} />
+            <Button label="Delete Option" onClick={handleDleleteOption} />
+          </div>
         </div>
       </div>
     );
   };
+  useEffect(() => {
+    console.log(isQuizSuccess, "Quiz added in");
 
+    if (isQuizSuccess) {
+      toast.current?.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Quiz Added Successfully",
+        life: 3000,
+      });
+      navigate("/allquiz");
+    }
+  }, [isQuizSuccess]);
   const Submittodatabase = () => {
     let x = 0;
     for (let index = 0; index < all.length; index++) {
@@ -174,24 +227,16 @@ const Quiz: React.FC<QuizProps> = () => {
     }
 
     if (x === 0) {
-      if(isQuizPending) return;
+      if (isQuizPending) return;
       if (!starttime || !endtime) {
         return;
-      } 
-      quizadd({
-        title:"new one",
-        start_time:starttime.toISOString(),
-        end_time:endtime.toISOString(),
-        questions:all,
-      });
-      if(isQuizSuccess){
-        toast.current?.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Quiz Added Successfully",
-          life: 3000,
-        });
       }
+      quizadd({
+        title: title,
+        start_time: starttime.toISOString(),
+        end_time: endtime.toISOString(),
+        questions: all,
+      });
     }
   };
 
@@ -207,15 +252,13 @@ const Quiz: React.FC<QuizProps> = () => {
               alignItems: "center",
             }}
           >
-            <label htmlFor="question">
-              How many questions do you want to add ?{" "}
-            </label>
+            <label htmlFor="question">Title</label>
             <InputText
-              style={{ width: "100px" }}
-              placeholder="Integers"
-              onChange={(e) => {
-                setNumque(e.target.value);
-              }}
+              type="text"
+              value={title}
+              style={{ width: "300px", marginBottom: "0px" }}
+              className="p-inputtext-lg"
+              onChange={(e) => setTitle(e.target.value)}
             />
             <div style={{ display: "flex", margin: "20px" }}>
               <div style={{ marginRight: "50px" }}>
@@ -243,7 +286,18 @@ const Quiz: React.FC<QuizProps> = () => {
                 />
               </div>
             </div>
+            <label htmlFor="question">
+              How many questions do you want to add ?{" "}
+            </label>
+            <InputText
+              style={{ width: "100px" }}
+              placeholder="Number"
+              onChange={(e) => {
+                setNumque(e.target.value);
+              }}
+            />
             <Button style={{ marginTop: "10px" }} onClick={Generateque}>
+              <Toast ref={toast}></Toast>
               Generate Quiz
             </Button>
           </div>

@@ -10,19 +10,27 @@ const Login: React.FC = () => {
   const [checked1, setChecked1] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const { mutate: login, isPending: isLoginPending } = useLoginQuery();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const {
+    mutate: login,
+    isPending: isLoginPending,
+    isSuccess: isLoginSuccess,
+  } = useLoginQuery();
   const handleLoginSubmit = () => {
     if (isLoginPending) return;
-    login({ email: "shashwatpatel04@gmail.com", password: "Skpatel@1203" });
+    login({ email: email, password: password });
+    // login({ email: "shashwatpatel04@gmail.com", password: "Skpatel@1203" });
   };
 
-  const check = () => {
-    if ("shaswat data check kare to") {
-      navigate("/main");
-    } else {
-      navigate("/login");
+  useEffect(() => {
+    if (isLoginSuccess) {
+      console.log("opop");
+      navigate("/");
     }
-  };
+  }, [isLoginSuccess]);
+
   return (
     <>
       <div className="main">
@@ -48,6 +56,7 @@ const Login: React.FC = () => {
               type="text"
               placeholder="Email address"
               className="w-full mb-3"
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <label
@@ -60,6 +69,7 @@ const Login: React.FC = () => {
               type="password"
               placeholder="Password"
               className="w-full mb-3"
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <div className="flex align-items-center justify-content-between mb-6">
@@ -75,9 +85,8 @@ const Login: React.FC = () => {
             </div>
 
             <Button
-              // onClick={check}
-              disabled={isLoginPending}
               onClick={handleLoginSubmit}
+              disabled={isLoginPending}
               label="Sign In"
               icon="pi pi-user"
               className="w-full"

@@ -1,4 +1,10 @@
-import { useMutation, MutationFunction } from "@tanstack/react-query";
+import {
+  useMutation,
+  MutationFunction,
+  useQuery,
+  QueryFunction,
+  UseMutateFunction,
+} from "@tanstack/react-query";
 import apiClient from "../utils/apiClient";
 import { setLocalStorage } from "../utils/localStorage";
 import { ApiResponse } from "../utils/apiResponse";
@@ -17,11 +23,31 @@ interface Option {
   value: string;
   isAnswer: boolean;
 }
-interface QuizParams{
-    title:string;
-    start_time:string,
-    end_time:string,
-    questions:Array<Question>;
+interface QuizParams {
+  title: string;
+  start_time: string;
+  end_time: string;
+  questions: Array<Question>;
+}
+interface AllQParams {
+  getQuizeById: string;
+}
+interface QuizData {
+  _id: string;
+  title: string;
+}
+interface QuizDelete {
+  id: string;
+}
+interface QuizUpdate {
+  title: string;
+  start_time: string;
+  end_time: string;
+  questions: Array<Question>;
+}
+interface QuizUpdatedData {
+  id: string;
+  updateData: QuizUpdate;
 }
 
 const login: MutationFunction<ApiResponse<any>, LoginParams> = async ({
@@ -34,28 +60,100 @@ const login: MutationFunction<ApiResponse<any>, LoginParams> = async ({
   });
   return res.data;
 };
-const quizadd: MutationFunction<ApiResponse<any>, QuizParams> = async({
+const quizadd: MutationFunction<ApiResponse<any>, QuizParams> = async ({
   title,
   start_time,
   end_time,
   questions,
-}: QuizParams) =>{
-  const res= await axios.post("http://103.26.48.209:3001/api/quize/createQuize",{
-    title:title,
-    start_time:start_time,
-    end_time:end_time,
-    questions:questions,
-  })
+}: QuizParams) => {
+  const res = await apiClient.post("api/quize/createQuize", {
+    title: title,
+    start_time: start_time,
+    end_time: end_time,
+    questions: questions,
+  });
   return res.data;
-}
-export const AddQuiz = () => useMutation({
-  mutationFn: quizadd,
-  onSuccess: (data) => {
-    const { accessToken, refreshToken } = data.data;
-    setLocalStorage(ACCESS_TOKEN, accessToken);
-    setLocalStorage(REFRESH_TOKEN, refreshToken);
-  },
-})
+};
+const fetchAllQuiz: any = async () => {
+  const res = await apiClient.get(`api/quize/getAllQuize`);
+  // console.log(" run ");
+  return res.data as ApiResponse<any>;
+};
+const fetchQuizMarks: any = async () => {
+  const res = await apiClient.get(`api/quize/getAllQuize`);
+  // console.log(" run ");
+  return res.data as ApiResponse<any>;
+};
+const fetchQuizById: any = async (id: string) => {
+  const res = await apiClient.get(`api/quize/getQuizeById/${id}`);
+  return res.data;
+};
+const fetchdeleteQuiz: MutationFunction<ApiResponse<any>, QuizDelete> = async ({
+  id,
+}: QuizDelete) => {
+  const response = await apiClient.delete(`api/quize/deleteQuize/${id}`);
+  return response.data;
+};
+export const DeleteQuiz = () =>
+  useMutation({
+    mutationFn: fetchdeleteQuiz,
+  });
+const showall: MutationFunction<ApiResponse<any>, QuizDelete> = async ({
+  id,
+}: QuizDelete) => {
+  // console.log("main run", id);
+  const temp = "abc";
+  const responseData: any = { data: temp };
+
+  return responseData as ApiResponse<any>;
+};
+export const Mainfun = () =>
+  useMutation({
+    mutationFn: showall,
+  });
+export const useAllQuiz = () =>
+  useQuery<QuizData[], Error, any>({
+    queryKey: ["allQuiz"], // Assuming getQuizeById is defined
+    queryFn: fetchAllQuiz,
+  });
+export const useAllQuizMarks = () =>
+  useQuery<QuizData[], Error, any>({
+    queryKey: ["allQuizmarks"], // Assuming getQuizeById is defined
+    queryFn: fetchQuizMarks,
+  });
+// <Promise<ApiResponse<any>>, Array<string>, AllQParams>,any,any,Array<string>>
+export const useAllQuizbyId = (id?: string) =>
+  useQuery({
+    queryKey: ["allQuizbyId"], // Assuming getQuizeById is defined
+    queryFn: () => fetchQuizById(id),
+  });
+const updateQuizById: MutationFunction<
+  ApiResponse<any>,
+  QuizUpdatedData
+> = async ({
+  id,
+  updateData: { title, start_time, end_time, questions },
+}: QuizUpdatedData) => {
+  // console.log(id, "update");
+
+  const res = await apiClient.post(`api/quize/updateQuize/${id}`, {
+    updateData: {
+      title: title,
+      start_time: start_time,
+      end_time: end_time,
+      questions: questions,
+    },
+  });
+  return res.data as ApiResponse<any>;
+};
+export const useUpdateQuiz = () =>
+  useMutation({
+    mutationFn: updateQuizById,
+  });
+export const AddQuiz = () =>
+  useMutation({
+    mutationFn: quizadd,
+  });
 
 export const useLoginQuery = () =>
   useMutation({
