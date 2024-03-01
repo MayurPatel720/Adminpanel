@@ -1,6 +1,6 @@
 import Mainlayout from "../layout/Mainlayout";
 import "../css/Feed.css";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
@@ -12,8 +12,14 @@ import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { FeedParams, useCreateFeedQuery, useGetalluser } from "../queries/feed";
 import { ListBox } from "primereact/listbox";
 
+
 export default function FloatLabelDemo() {
-  const { mutate: createFeed, isPending: isFeedCreatePending } = useCreateFeedQuery();
+  const {
+    mutate: createFeed,
+    isPending: isFeedCreatePending,
+    isSuccess,
+    isError,
+  } = useCreateFeedQuery();
   const toast = useRef<Toast | null>(null);
 
   const [title, setTitle] = useState("");
@@ -40,19 +46,32 @@ export default function FloatLabelDemo() {
           description: description,
           expires_at: expiresAt ? expiresAt.toISOString() : "",
           level: selectedLevel,
-          users: selectedNames.map(name => name.name),
+          users: selectedNames.map((city) => city._id),
           FeedImgVi: files,
         };
         createFeed(feedParams);
-        toast.current?.show({
-          severity: "info",
-          summary: "Confirmed",
-          detail: "Feed Posted",
-          life: 3000,
-        });
       },
     });
   };
+
+  useEffect(()=>{
+    if (isSuccess) {
+      toast.current?.show({
+        severity: "info",
+        summary: "Confirmed",
+        detail: "Feed Posted",
+        life: 3000,
+      });
+    }
+    if (isError) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Rejected",
+        detail: "Feed Not Posted",
+        life: 3000,
+      });
+    }
+  },[isSuccess,isError]);
 
   const onUpload = () => {
     toast.current?.show({
@@ -63,18 +82,23 @@ export default function FloatLabelDemo() {
     });
   };
 
-  const cities: City[] = data?.data?.map((item: { name: string }) => ({
-    name: item.name,
-  })) || [];
+  const cities: City[] =
+    data?.data?.map((item: { name: string; _id: string }) => ({
+      name: item.name,
+      _id: item._id,
+      // roll: item.roll,
+    })) || [];
 
   interface City {
     name: string;
+    _id: string;
+    // roll:string;
   }
 
   const [selectedNames, setSelectedNames] = useState<City[]>([]);
-
   return (
     <Mainlayout>
+      {/* {JSON.stringify()} */}
       <div className="feed_container">
         <h3 className="feee">Creation of Feed</h3>
         <div className="field col-12 md:col-4">
@@ -120,7 +144,7 @@ export default function FloatLabelDemo() {
             onChange={(e) => setSelectedNames(e.value)}
             options={cities}
             optionLabel="name"
-            className="w-full md:w-14rem"
+            className="w-full"
           />
         </div>
         <div className="field col-12 md:col-4">

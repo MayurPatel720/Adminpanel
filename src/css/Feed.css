@@ -32,3 +32,9 @@ button[aria-label="Upload"]{
 .p-dropdown-label{
     margin-right: 20px;
 }
+
+
+.p-listbox-list{
+    height: 250px;
+}
+

@@ -37,14 +37,9 @@ export default function BasicDemo() {
           command: () => navigate("/Feed/Create"),
         },
         {
-          label: "Delete",
+          label: "All Posts",
           icon: "pi pi-times",
           command: () => navigate("/Feed/all"),
-        },
-        {
-          label: "Edit",
-          icon: "pi pi-refresh",
-          command: () => navigate("/Feed/Edit"),
         },
       ],
     },

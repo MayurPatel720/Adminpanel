@@ -21,6 +21,8 @@ const alluser: QueryFunction<
   any
 > = async () => {
   const res = await apiClient.get("api/user/allUsers");
+  console.log(res.data.data[0].roll);
+
   return res.data;
 };
 const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
@@ -36,7 +38,9 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   formData.append("description", description);
   formData.append("expires_at", expires_at);
   formData.append("level", level);
-  formData.append("users", JSON.stringify(users));
+  users.forEach((user, index) => {
+    formData.append(`users`, user);
+  });
   Array.from(FeedImgVi).forEach((file) => {
     formData.append("FeedImgVi", file, file.name);
   });

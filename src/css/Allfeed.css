@@ -4,6 +4,12 @@
     font-weight: 600;
     font-style: normal;
 }
+.loader{
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%,-50%);
+}
 
 .all_container{
     margin-top: 25px;
@@ -42,6 +48,11 @@
   .start_feed,
   .third_feed {
     flex-basis: 10%;
+  }
+
+  .third_feed{
+    display: flex;
+    gap: 10px;
   }
   
   .middle_feed {
@@ -83,3 +94,141 @@
     margin: 0;
   }
   
+  /* Edit Button */
+.edit-button {
+  background-color: #ffc107; /* Yellow color */
+  color: #333; /* Text color */
+  border: none;
+  border-radius: 3px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #ffca28; 
+}
+
+.edit-button:active {
+  background-color: #ffcc2f;
+}
+
+/* Sidebar Fields */
+.sidebar-content {
+  padding: 20px;
+}
+
+.sidebar-content h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.sidebar-content input[type="text"],
+.sidebar-content select,
+.sidebar-content input[type="date"] {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.sidebar-content select {
+  height: 40px; /* Adjust height for select input */
+}
+
+.update-button {
+  background-color: #28a745; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-button:hover {
+  background-color: #218838; 
+}
+
+.update-button:active {
+  background-color: #1e7e34; 
+}
+
+.sideaa{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  /* margin-bottom: 15px; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+  font-size: 16px;
+}
+
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff; 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  /* margin-bottom: 15px; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none; 
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Custom dropdown arrow */
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 10px); 
+  background-position-y: 50%; 
+  padding-right: 30px; 
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  /* margin-bottom: 15px; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+  font-size: 16px;
+}
+
+input[type="date"]:focus {
+  outline: none;
+  border-color: #007bff; 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
+.saasd{
+  width: 35%;
+}
+
+textarea {
+  width: 100%; 
+  height: auto; 
+  padding: 8px; 
+  border: 1px solid #ccc; 
+  border-radius: 4px;  
+  resize: vertical; 
+  box-sizing: border-box; 
+ 
+}
