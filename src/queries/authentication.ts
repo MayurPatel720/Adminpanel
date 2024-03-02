@@ -72,7 +72,7 @@ const quizadd: MutationFunction<ApiResponse<any>, QuizParams> = async ({
     end_time: end_time,
     questions: questions,
   });
-  return res.data;
+  return res.data as ApiResponse<any>;
 };
 const fetchAllQuiz: any = async () => {
   const res = await apiClient.get(`api/quize/getAllQuize`);

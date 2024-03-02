@@ -165,9 +165,10 @@ const Quiz: React.FC<QuizProps> = () => {
     );
   };
   useEffect(() => {
-    console.log(isQuizSuccess, "Quiz added in");
+    // console.log(isQuizSuccess, "Quiz added in");
 
     if (isQuizSuccess) {
+      <Toast ref={toast} />;
       toast.current?.show({
         severity: "success",
         summary: "Success",
@@ -177,6 +178,15 @@ const Quiz: React.FC<QuizProps> = () => {
       navigate("/allquiz");
     }
   }, [isQuizSuccess]);
+  const adddata = () => {
+    if (!starttime || !endtime) return;
+    quizadd({
+      title: title,
+      start_time: starttime.toISOString(),
+      end_time: endtime.toISOString(),
+      questions: all,
+    });
+  };
   const Submittodatabase = () => {
     let x = 0;
     for (let index = 0; index < all.length; index++) {
@@ -231,12 +241,8 @@ const Quiz: React.FC<QuizProps> = () => {
       if (!starttime || !endtime) {
         return;
       }
-      quizadd({
-        title: title,
-        start_time: starttime.toISOString(),
-        end_time: endtime.toISOString(),
-        questions: all,
-      });
+      adddata();
+      // console.log(a);
     }
   };
 
@@ -297,7 +303,6 @@ const Quiz: React.FC<QuizProps> = () => {
               }}
             />
             <Button style={{ marginTop: "10px" }} onClick={Generateque}>
-              <Toast ref={toast}></Toast>
               Generate Quiz
             </Button>
           </div>
@@ -314,7 +319,6 @@ const Quiz: React.FC<QuizProps> = () => {
               justifyContent: "space-evenly",
             }}
           >
-            <Toast ref={toast}></Toast>
             <Button onClick={Submittodatabase}>SUBMIT</Button>
           </div>
         </div>

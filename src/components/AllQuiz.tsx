@@ -16,94 +16,23 @@ interface QuizData {
   title: string;
 }
 
-const QuizItem: React.FC<{ quiz: QuizData }> = ({ quiz }) => {
-  const toast = useRef<Toast>(null);
+const QuizItem: React.FC<{ quiz: QuizData; onDelete: Function }> = ({
+  quiz,
+  onDelete,
+}) => {
   const [isDialogVisible, setDialogVisible] = useState(false);
   const navigate = useNavigate();
-  const {
-    mutateAsync: fetchdeleteQuiz,
-    isPending: isdeletePending,
-    isSuccess: isdeleteSuccess,
-    isError: isdeleteError,
-    status,
-  } = DeleteQuiz();
-  const queryClient = useQueryClient();
+
   const handleEdit = async () => {
     navigate(`/editquiz/${quiz._id}`);
   };
-  const handleDelete = async () => {
-    if (isdeletePending) return;
-    await fetchdeleteQuiz({
-      id: quiz._id,
-    });
-  };
-  const Deletesuccessfully = () => {
-    toast.current?.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Message Content",
-      life: 3000,
-    });
-  };
-  useEffect(() => {
-    console.log(isdeleteSuccess, "isDeletreSucces", toast.current);
-    // <Toast ref={toast} />;
-
-    if (isdeleteSuccess) {
-      console.log("inside toast", toast.current ? "abc" : "bcd");
-      // <Toast ref={toast} />;
-      Deletesuccessfully();
-      console.log("runnnnnnnnnn");
-    }
-
-    if (isdeleteError) {
-      toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Quiz Not delete",
-        life: 3000,
-      });
-    }
-  }, [isdeleteSuccess, isdeleteError]);
-
-  const accept = async () => {
-    if (isdeletePending) return;
-    await fetchdeleteQuiz({
-      id: quiz._id,
-    });
-    queryClient.invalidateQueries();
-    // console.log(isdeleteSuccess);
-    // console.log(status);
-
-    if (isdeleteSuccess) {
-      console.log("delete");
-      toast.current?.show({
-        severity: "info",
-        summary: "Confirmed",
-        detail: "Quiz deleted",
-        life: 3000,
-      });
-    }
-    if (isdeleteError) {
-      toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Quiz Not delete",
-        life: 3000,
-      });
-    }
-  };
-  const reject = () => {
-    toast.current?.show({
-      severity: "warn",
-      summary: "Rejected",
-      detail: "You have rejected",
-      life: 3000,
-    });
-  };
-  const confirm1 = () => {
+  const reject = () => {};
+  const confirm1 = async () => {
     setDialogVisible(true);
-    Deletesuccessfully();
+  };
+  const confirm2 = async () => {
+    setDialogVisible(true);
+    onDelete(quiz._id);
   };
   return (
     <div key={quiz._id} className="quiz-containeralq">
@@ -112,7 +41,6 @@ const QuizItem: React.FC<{ quiz: QuizData }> = ({ quiz }) => {
         <Button onClick={handleEdit} style={{ margin: "18px" }}>
           EDIT
         </Button>
-        <Toast ref={toast} />
         <div className="card flex flex-wrap gap-2 justify-content-center">
           <Button
             style={{ margin: "15px" }}
@@ -122,15 +50,14 @@ const QuizItem: React.FC<{ quiz: QuizData }> = ({ quiz }) => {
           ></Button>
         </div>
       </div>
-      <Toast ref={toast} />
       <ConfirmDialog
         key={quiz._id}
         visible={isDialogVisible}
         onHide={() => setDialogVisible(false)}
-        message={`Are you sure you want to proceed? ${quiz._id} ${quiz.title}`}
+        message={`Are you sure you want to proceed?`}
         header="Confirmation"
         icon="pi pi-exclamation-triangle"
-        accept={accept}
+        accept={confirm2}
         reject={reject}
       />
     </div>
@@ -144,15 +71,49 @@ const AllQuiz: React.FC<QuizProps> = () => {
     isError: isquizerror,
     isLoading,
   } = useAllQuiz();
-
+  const {
+    mutateAsync: fetchdeleteQuiz,
+    isPending: isdeletePending,
+    isSuccess: isdeleteSuccess,
+    isError: isdeleteError,
+    status,
+  } = DeleteQuiz();
+  const queryClient = useQueryClient();
+  const toast = useRef<Toast>(null);
+  useEffect(() => {
+    if (isdeleteSuccess) {
+      <Toast ref={toast} />;
+      toast.current?.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Quiz Deleted",
+        life: 3000,
+      });
+      queryClient.invalidateQueries();
+    }
+    if (isdeleteError) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Quiz Not delete",
+        life: 3000,
+      });
+    }
+  }, [isdeleteSuccess, isdeleteError]);
   return (
     <Mainlayout>
+      <Toast ref={toast} />
       <div className="quiz-container">
         {isLoading && <div>Loading...</div>}
         {isquizsuccess && (
           <div>
+            <Toast ref={toast} />
             {quizdata?.data.map((quiz: QuizData) => (
-              <QuizItem key={quiz._id} quiz={quiz} />
+              <QuizItem
+                key={quiz._id}
+                quiz={quiz}
+                onDelete={async (id: string) => fetchdeleteQuiz({ id })}
+              />
             ))}
           </div>
         )}
@@ -163,3 +124,6 @@ const AllQuiz: React.FC<QuizProps> = () => {
 };
 
 export default AllQuiz;
+function onDelete(_id: string) {
+  throw new Error("Function not implemented.");
+}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -14,6 +14,7 @@ import {
   useUpdateQuiz,
   useAllQuizbyId,
 } from "../queries/authentication";
+import { ToastContext, useToast } from "../App";
 interface QuizProps {}
 interface OptionItem {
   value: string;
@@ -39,8 +40,9 @@ const EditQuiz: React.FC<QuizProps> = () => {
   const [starttime, setStartTime] = useState<Date>();
   const [endtime, setEndTime] = useState<Date>();
   const [title, setTitle] = useState("");
-  const toast = useRef<Toast | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const toast = useToast();
+
   const navigate = useNavigate();
   const {
     mutateAsync: quizadd,
@@ -52,13 +54,14 @@ const EditQuiz: React.FC<QuizProps> = () => {
     isPending: isUpdatePending,
     isSuccess: isUpdateSuccess,
   } = useUpdateQuiz();
-
+  const isToastShown = useRef(false);
   const {
     data: quizdata,
     isLoading,
     isPending,
     isSuccess,
   } = useAllQuizbyId(id);
+
   useEffect(() => {
     handleAddcontent();
   }, [quizdata]);
@@ -239,7 +242,25 @@ const EditQuiz: React.FC<QuizProps> = () => {
       </div>
     );
   };
-
+  const nav = () => {
+    let a = new Date();
+    // while (true) {
+    //   let b = new Date();
+    //   if (b.getSeconds() >= a.getSeconds() + 1) break;
+    // }
+    navigate("/allquiz");
+  };
+  useEffect(() => {
+    if (isUpdateSuccess && toast.current) {
+      toast.current?.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Quiz Added Successfully",
+        life: 3000,
+      });
+      nav();
+    }
+  }, [isUpdateSuccess]);
   const Submittodatabase = async () => {
     let x = 0;
     for (let index = 0; index < all.length; index++) {
@@ -301,16 +322,19 @@ const EditQuiz: React.FC<QuizProps> = () => {
           questions: all,
         },
       });
+      // console.log(a, "a");
+
       // console.log(isQuizSuccess);
       // console.log("pen ", isQuizPending);
-      navigate("/allquiz");
+      // navigate("/allquiz");
       if (isUpdateSuccess) {
-        toast.current?.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Quiz Added Successfully",
-          life: 3000,
-        });
+        // toast.current?.show({
+        //   severity: "success",
+        //   summary: "Success",
+        //   detail: "Quiz Updated Successfully",
+        //   life: 3000,
+        // });
+        // navigate("/allquiz");
       }
     }
   };

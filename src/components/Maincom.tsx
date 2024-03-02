@@ -1,6 +1,6 @@
 import "../css/Maincom.css";
 import Mainlayout from "../layout/Mainlayout";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
@@ -15,12 +15,8 @@ const Maincom = () => {
     isSuccess: ismainsuccess,
     isError: ismainerror,
   } = Mainfun();
-  const accept = async () => {
-    // console.log("done");
-    await showall({ id: "abc" });
-    console.log(ismainsuccess);
-    console.log(ismainpending);
-
+  useEffect(() => {
+    console.log(ismainsuccess, "in main success");
     if (ismainsuccess) {
       toast.current?.show({
         severity: "info",
@@ -29,6 +25,12 @@ const Maincom = () => {
         life: 3000,
       });
     }
+  }, [ismainsuccess]);
+  const accept = async () => {
+    // console.log("done");
+    await showall({ id: "abc" });
+    // console.log(ismainsuccess);
+    // console.log(ismainpending);
 
     setDialogVisible(false); // Hide the dialog after accepting
   };
