@@ -19,10 +19,12 @@ interface QuizProps {}
 interface OptionItem {
   value: string;
   isAnswer: boolean;
+  _id: string | null;
 }
 
 interface QuestionItem {
   question: string;
+  _id: string | null;
   options: OptionItem[];
 }
 
@@ -33,7 +35,15 @@ interface QuizData {
 const EditQuiz: React.FC<QuizProps> = () => {
   const { id } = useParams();
   const [all, setAll] = useState<
-    { question: string; options: { value: string; isAnswer: boolean }[] }[]
+    {
+      question: string;
+      _id: string | null;
+      options: {
+        _id: string | null;
+        value: string;
+        isAnswer: boolean;
+      }[];
+    }[]
   >([]);
   const [numQue, setNumque] = useState("");
   const [curr, setCurr] = useState(1);
@@ -42,7 +52,9 @@ const EditQuiz: React.FC<QuizProps> = () => {
   const [title, setTitle] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const toast = useToast();
-
+  const [ButtonStyles, setButtonStyles] = useState<null | {
+    [key: string]: React.CSSProperties;
+  }>(null);
   const navigate = useNavigate();
   const {
     mutateAsync: quizadd,
@@ -63,10 +75,14 @@ const EditQuiz: React.FC<QuizProps> = () => {
   } = useAllQuizbyId(id);
 
   useEffect(() => {
+    // if (flag == 1) {
     handleAddcontent();
+    // setFlag(0);
+    // }
   }, [quizdata]);
-
+  // console.log(quizdata);
   const handleAddcontent = async () => {
+    // if (all.length) return;
     if (!quizdata || !quizdata.data.questions || isLoading) return;
     setTitle(quizdata.data.title);
     setEndTime(new Date(quizdata.data.start_time));
@@ -74,44 +90,147 @@ const EditQuiz: React.FC<QuizProps> = () => {
     const newArray = (quizdata.data.questions as QuestionItem[]).map(
       (questionItem) => ({
         question: questionItem.question,
+        _id: questionItem._id,
         options: questionItem.options.map((optionItem: OptionItem) => ({
           value: optionItem.value,
           isAnswer: optionItem.isAnswer,
+          _id: optionItem._id,
         })),
       })
     );
+
     setAll(newArray);
   };
+  const handleDeletequestions = async () => {
+    let x = all.length;
+    setCurr(x - 1);
+    // setCurr((prev) => prev - 1);
+    const updatedall = [...all];
+    if (updatedall.length <= 0) return;
+    updatedall.pop();
+    setAll((prevAll) => {
+      const newAll = [...prevAll];
+      newAll.pop(); // Pop again to ensure consistency
+      return newAll;
+    });
+    console.log(all);
+    disQuestions();
+    showContant();
+    handlechangebuttonstyle();
+  };
+  const handleaddquestions = async () => {
+    const updatedall = [...all];
+    updatedall.push({
+      question: "",
+      options: [
+        {
+          value: "",
+          isAnswer: false,
+        } as OptionItem,
+      ],
+    } as QuestionItem);
 
+    setCurr(updatedall.length); // Set current question to the newly added one
+    setAll(updatedall);
+    console.log(all);
+    // disQuestions();
+  };
+  const handlechangebuttonstyle = () => {
+    const defaultStyle: React.CSSProperties = {
+      backgroundColor: "#2196f3",
+      color: "white",
+    };
+    // console.log(defaultStyle);
+
+    const invalidStyle: React.CSSProperties = {
+      backgroundColor: "green",
+      color: "white",
+    };
+
+    const validStyle: React.CSSProperties = {
+      backgroundColor: "green",
+      color: "white",
+    };
+
+    // Create a copy of the current button styles
+    const updatedStyles: { [key: string]: React.CSSProperties } = {
+      ...ButtonStyles,
+    };
+
+    // Loop through the questions
+    for (let index = 0; index < all.length; index++) {
+      // console.log(all[index].options.length);
+
+      let x = 0;
+      if (all[index].question !== " " && all[index].options.length >= 2) {
+        for (let i = 0; i < all[index].options.length; i++) {
+          if (all[index].options[i].isAnswer === true) {
+            x = 1;
+          }
+        }
+        // Update the style based on the condition
+      }
+      updatedStyles[`questionbutton${index + 1}`] =
+        x === 1 ? validStyle : defaultStyle;
+    }
+    // console.log(updatedStyles);
+    // console.log("run", updatedStyles);
+
+    // Set the updated styles in the state
+    setButtonStyles(updatedStyles);
+  };
   const disQuestions = () => {
-    const t = parseInt(quizdata.data.questions.length);
+    const t1: number = all.length;
+    // const t2: number = quizdata.data.questions.length;
+
+    const maxLen: number = Math.max(t1);
+
     const buttons = [];
-    for (let i = 0; i < t; i++) {
+    const buttonsObject: Record<string, React.CSSProperties> = {};
+
+    for (let i = 0; i < maxLen; i++) {
+      const buttonStyle = ButtonStyles?.[`questionbutton${i + 1}`] || {};
       buttons.push(
         <Button
           key={i}
-          style={{ borderRadius: "50%", margin: "10px" }}
+          className={`questionbutton${i + 1}`}
+          style={{
+            borderRadius: "50%",
+            margin: "10px",
+            ...(buttonStyle as React.CSSProperties),
+          }}
           onClick={() => {
+            handlechangebuttonstyle();
             setCurr(i + 1);
           }}
         >
           {i + 1}
         </Button>
       );
+      buttonsObject[`questionbutton${i + 1}`] = {
+        borderRadius: "50%",
+        margin: "10px",
+        ...(buttonStyle as React.CSSProperties),
+      };
     }
+
+    if (ButtonStyles == null) {
+      setButtonStyles(buttonsObject);
+    }
+
     return <>{buttons}</>;
   };
-
   const handleAddOption = () => {
     const updatedAll = [...all];
     updatedAll[curr - 1] = {
       question: updatedAll[curr - 1]?.question || "",
+      // _id: updatedAll[curr - 1]?._id || null,
       options: updatedAll[curr - 1]?.options || [],
-    };
+    } as QuestionItem;
     updatedAll[curr - 1].options.push({
       value: "",
       isAnswer: false,
-    });
+    } as OptionItem);
     setAll(updatedAll);
   };
   const handleDleleteOption = () => {
@@ -119,10 +238,11 @@ const EditQuiz: React.FC<QuizProps> = () => {
     updatedAll[curr - 1] = {
       question: updatedAll[curr - 1]?.question || "",
       options: updatedAll[curr - 1]?.options || [],
-    };
+    } as QuestionItem;
     if (updatedAll[curr - 1].options.length <= 0) return;
     updatedAll[curr - 1].options.pop();
     setAll(updatedAll);
+    // console.log(all);
   };
   const showContant = () => {
     return (
@@ -145,6 +265,16 @@ const EditQuiz: React.FC<QuizProps> = () => {
               setAll(updatedAll);
             }}
           />
+          <div
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button onClick={handleaddquestions}>Add Question</Button>
+            <Button onClick={handleDeletequestions}>Delete Question</Button>
+          </div>
         </div>
         <div className="options-container">
           {renderOptions()}
@@ -162,7 +292,6 @@ const EditQuiz: React.FC<QuizProps> = () => {
       </div>
     );
   };
-
   const renderOptions = () => {
     return all[curr - 1]?.options.map((option, index) => (
       <div className="option" key={index}>
@@ -310,9 +439,8 @@ const EditQuiz: React.FC<QuizProps> = () => {
       if (!starttime || !endtime) {
         return;
       }
-      // await fetchdeleteQuiz({
-      //   id: quizdata.data._id,
-      // });
+      // console.log(all);
+
       await updateQuizById({
         id: quizdata.data._id,
         updateData: {
@@ -320,13 +448,9 @@ const EditQuiz: React.FC<QuizProps> = () => {
           start_time: starttime.toISOString(),
           end_time: endtime.toISOString(),
           questions: all,
+          // _id: "abcdsfsd",
         },
       });
-      // console.log(a, "a");
-
-      // console.log(isQuizSuccess);
-      // console.log("pen ", isQuizPending);
-      // navigate("/allquiz");
       if (isUpdateSuccess) {
         // toast.current?.show({
         //   severity: "success",

@@ -26,7 +26,6 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (isLoginSuccess) {
-      console.log("opop");
       navigate("/");
     }
   }, [isLoginSuccess]);

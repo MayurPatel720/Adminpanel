@@ -24,6 +24,9 @@ const Quiz: React.FC<QuizProps> = () => {
   const [endtime, setEndTime] = useState<Date>();
   const toast = useRef<Toast | null>(null);
   const [title, setTitle] = useState("");
+  const [ButtonStyles, setButtonStyles] = useState<null | {
+    [key: string]: React.CSSProperties;
+  }>(null);
   const {
     mutate: quizadd,
     isPending: isQuizPending,
@@ -86,24 +89,90 @@ const Quiz: React.FC<QuizProps> = () => {
       </div>
     ));
   };
+  const handlechangebuttonstyle = () => {
+    const defaultStyle: React.CSSProperties = {
+      backgroundColor: "#2196f3",
+      color: "white",
+    };
+    // console.log(defaultStyle);
+
+    const invalidStyle: React.CSSProperties = {
+      backgroundColor: "green",
+      color: "white",
+    };
+
+    const validStyle: React.CSSProperties = {
+      backgroundColor: "green",
+      color: "white",
+    };
+
+    // Create a copy of the current button styles
+    const updatedStyles: { [key: string]: React.CSSProperties } = {
+      ...ButtonStyles,
+    };
+
+    // Loop through the questions
+    for (let index = 0; index < all.length; index++) {
+      let x = 0;
+      if (all[index].question !== " " && all[index].options.length >= 2) {
+        for (let i = 0; i < all[index].options.length; i++) {
+          if (all[index].options[i].isAnswer === true) {
+            x = 1;
+          }
+        }
+        // Update the style based on the condition
+      }
+      updatedStyles[`questionbutton${index + 1}`] =
+        x === 1 ? validStyle : defaultStyle;
+    }
+    // console.log(updatedStyles);
+    // console.log("run", updatedStyles);
+
+    // Set the updated styles in the state
+    setButtonStyles(updatedStyles);
+  };
+
   const disQuestions = () => {
     const t = parseInt(numQue);
     const buttons = [];
+    const buttonsObject: Record<string, React.CSSProperties> = {}; // Explicitly type buttonsObject
+
     for (let i = 0; i < t; i++) {
+      const buttonStyle = ButtonStyles?.[`questionbutton${i + 1}`] || {};
+
       buttons.push(
         <Button
           key={i}
-          style={{ borderRadius: "50%", margin: "10px" }}
+          className={`questionbutton${i + 1}`}
+          style={{
+            borderRadius: "50%",
+            margin: "10px",
+            ...(buttonStyle as React.CSSProperties), // Type assertion to indicate it's a CSSProperties
+          }}
           onClick={() => {
+            handlechangebuttonstyle();
             setCurr(i + 1);
           }}
         >
           {i + 1}
         </Button>
       );
+      buttonsObject[`questionbutton${i + 1}`] = {
+        borderRadius: "50%",
+        margin: "10px",
+        ...(buttonStyle as React.CSSProperties), // Type assertion to indicate it's a CSSProperties
+      };
     }
+
+    if (ButtonStyles == null) {
+      // console.log("run");
+      // console.log(buttons);
+      setButtonStyles(buttonsObject);
+    }
+
     return <>{buttons}</>;
   };
+
   const handleAddOption = () => {
     const updatedAll = [...all];
     updatedAll[curr - 1] = {
@@ -164,20 +233,19 @@ const Quiz: React.FC<QuizProps> = () => {
       </div>
     );
   };
-  useEffect(() => {
-    // console.log(isQuizSuccess, "Quiz added in");
-
-    if (isQuizSuccess) {
-      <Toast ref={toast} />;
-      toast.current?.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Quiz Added Successfully",
-        life: 3000,
-      });
-      navigate("/allquiz");
-    }
-  }, [isQuizSuccess]);
+  // useEffect(() => {
+  //   // console.log(isQuizSuccess, "Quiz added in");
+  //   if (isQuizSuccess) {
+  //     <Toast ref={toast} />;
+  //     toast.current?.show({
+  //       severity: "success",
+  //       summary: "Success",
+  //       detail: "Quiz Added Successfully",
+  //       life: 3000,
+  //     });
+  //     navigate("/allquiz");
+  //   }
+  // }, [isQuizSuccess]);
   const adddata = () => {
     if (!starttime || !endtime) return;
     quizadd({

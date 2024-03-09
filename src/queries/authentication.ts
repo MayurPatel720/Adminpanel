@@ -19,6 +19,16 @@ interface Question {
   question: string;
   options: Array<Option>;
 }
+interface QuestionEdit {
+  question: string;
+  _id: string | null;
+  options: Array<OptionEdit>;
+}
+interface OptionEdit {
+  value: string;
+  _id: string | null;
+  isAnswer: boolean;
+}
 interface Option {
   value: string;
   isAnswer: boolean;
@@ -40,10 +50,11 @@ interface QuizDelete {
   id: string;
 }
 interface QuizUpdate {
+  // _id: string;
   title: string;
   start_time: string;
   end_time: string;
-  questions: Array<Question>;
+  questions: Array<QuestionEdit>;
 }
 interface QuizUpdatedData {
   id: string;
@@ -134,8 +145,6 @@ const updateQuizById: MutationFunction<
   id,
   updateData: { title, start_time, end_time, questions },
 }: QuizUpdatedData) => {
-  // console.log(id, "update");
-
   const res = await apiClient.post(`api/quize/updateQuize/${id}`, {
     updateData: {
       title: title,
@@ -144,6 +153,7 @@ const updateQuizById: MutationFunction<
       questions: questions,
     },
   });
+
   return res.data as ApiResponse<any>;
 };
 export const useUpdateQuiz = () =>

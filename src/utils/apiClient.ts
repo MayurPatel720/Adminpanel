@@ -6,7 +6,7 @@ const apiClient = axios.create({
   // baseURL: "http://103.26.48.209:3001/",
   // baseURL: "http://192.168.113.4:3000/",
   // baseURL: "http://192.168.6.152:3000/",
-  baseURL: "http://192.168.0.103:3000/",
+  baseURL: "http://192.168.0.102:3000/",
 });
 
 apiClient.interceptors.request.use(
