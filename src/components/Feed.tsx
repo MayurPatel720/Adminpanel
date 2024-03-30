@@ -12,7 +12,6 @@ import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { FeedParams, useCreateFeedQuery, useGetalluser } from "../queries/feed";
 import { ListBox } from "primereact/listbox";
 
-
 export default function FloatLabelDemo() {
   const {
     mutate: createFeed,
@@ -54,7 +53,7 @@ export default function FloatLabelDemo() {
     });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isSuccess) {
       toast.current?.show({
         severity: "info",
@@ -71,7 +70,7 @@ export default function FloatLabelDemo() {
         life: 3000,
       });
     }
-  },[isSuccess,isError]);
+  }, [isSuccess, isError]);
 
   const onUpload = () => {
     toast.current?.show({
@@ -152,6 +151,7 @@ export default function FloatLabelDemo() {
             <Calendar
               inputId="expiry"
               value={expiresAt}
+              dateFormat="dd/mm/yy"
               onChange={(e) => setExpiresAt(e.value as Date)}
             ></Calendar>
             <label htmlFor="expiry">Expiry at</label>

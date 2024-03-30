@@ -236,6 +236,7 @@ const AllFeed = () => {
                   >
                     Edit
                   </button>
+
                   <button
                     onClick={() => deleteButtonClick(feedItem._id)}
                     className="delete-button"
