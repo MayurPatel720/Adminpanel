@@ -1,53 +1,24 @@
-// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import "./App.css";
-// import Login from "./components/Login";
-// import ServiceCreate from "./components/ServiceCreate";
-// import Maincom from "./components/Maincom";
-// import Quiz2 from "./components/Quiz";
-// import Feed from "./components/Feed";
-// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import AllFeed from "./components/AllFeed";
-// import AllService from "./components/AllService";
-
-// const queryClient = new QueryClient();
-
-// function App() {
-//   const authority = "MANAGER  ";
-//   return (
-//     <QueryClientProvider client={queryClient}>
-//       <Router>
-//         <Routes>
-//             <Route path="/" element={<Maincom />} />
-//             <Route path="/login" element={<Login />} />
-
-//             <Route path="/Feed/Create" element={<Feed />} />
-//             <Route path="/Feed/all" element={<AllFeed />} />
-//             <Route path="/Service/create" element={<ServiceCreate />} />
-//             <Route path="/Service/All" element={<AllService />} />
-//             <Route path="/quiz" element={<Quiz2 />} />
-//         </Routes>
-//       </Router>
-//     </QueryClientProvider>
-//   );
-// }
-
-// export default App;
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
   Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
 } from "react-router-dom";
 import "./App.css";
+import AllFeed from "./components/AllFeed";
+import AllQuiz from "./components/AllQuiz";
+import AllService from "./components/AllService";
+import AllGroups from "./components/Allgroups";
+import EditQuiz from "./components/EditQuiz";
+import EditGroups from "./components/Editgroups";
+import Feed from "./components/Feed";
+import Group from "./components/Group";
 import Login from "./components/Login";
-import ServiceCreate from "./components/ServiceCreate";
 import Maincom from "./components/Maincom";
 import Quiz2 from "./components/Quiz";
-import Feed from "./components/Feed";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AllFeed from "./components/AllFeed";
-import AllService from "./components/AllService";
+import ServiceCreate from "./components/ServiceCreate";
+import ShowMarks from "./components/ShowMarks";
 import Unauthorized from "./components/Unauthorized";
 
 const queryClient = new QueryClient();
@@ -132,6 +103,49 @@ function App() {
                 return (
                   <Route key={routeKey} path="/quiz" element={<Quiz2 />} />
                 );
+              case "allquiz":
+                return (
+                  <Route key={routeKey} path="/allquiz" element={<AllQuiz />} />
+                );
+              case "group":
+                return (
+                  <Route key={routeKey} path="/group" element={<Group />} />
+                );
+              case "allgroup":
+                return (
+                  <Route
+                    key={routeKey}
+                    path="/allgroup"
+                    element={<AllGroups />}
+                  />
+                );
+              case "editquiz":
+                return (
+                  <Route
+                    key={routeKey}
+                    path="/editquiz/:id"
+                    element={<EditQuiz />}
+                  />
+                );
+              case "editgroup":
+                return (
+                  <Route
+                    key={routeKey}
+                    path="/editgroup/:id"
+                    element={<EditGroups />}
+                  />
+                );
+              case "quizmarks":
+                return (
+                  <Route
+                    key={routeKey}
+                    path="/quizmarks"
+                    element={<ShowMarks />}
+                  />
+                );
+              // case "kao":
+              //   return <Route key={routeKey} path="/kao" element={<Kao />} />;
+
               default:
                 return null;
             }

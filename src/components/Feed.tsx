@@ -1,17 +1,17 @@
-import Mainlayout from "../layout/Mainlayout";
-import "../css/Feed.css";
-import React, { useEffect, useRef, useState } from "react";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { Dropdown } from "primereact/dropdown";
+import { FileUpload } from "primereact/fileupload";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { Dropdown } from "primereact/dropdown";
-import { Calendar } from "primereact/calendar";
-import { Toast } from "primereact/toast";
-import { FileUpload } from "primereact/fileupload";
-import { Button } from "primereact/button";
-import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
-import { FeedParams, useCreateFeedQuery, useGetalluser } from "../queries/feed";
 import { ListBox } from "primereact/listbox";
-import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import "../css/Feed.css";
+import Mainlayout from "../layout/Mainlayout";
+import { FeedParams, useCreateFeedQuery, useGetalluser } from "../queries/feed";
 
 export default function FloatLabelDemo() {
   const {
@@ -99,6 +99,7 @@ export default function FloatLabelDemo() {
   const [selectedNames, setSelectedNames] = useState<City[]>([]);
   return (
     <Mainlayout>
+      {/* {JSON.stringify()} */}
       <div className="feed_container">
         <h3 className="feee">Creation of Feed</h3>
         <div className="field col-12 md:col-4">
