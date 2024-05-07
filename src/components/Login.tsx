@@ -21,7 +21,6 @@ const Login: React.FC = () => {
   const handleLoginSubmit = () => {
     if (isLoginPending) return;
     login({ email: email, password: password });
-    // login({ email: "shashwatpatel04@gmail.com", password: "Skpatel@1203" });
   };
 
   useEffect(() => {

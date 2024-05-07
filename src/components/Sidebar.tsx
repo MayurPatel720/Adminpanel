@@ -1,9 +1,89 @@
+// import "../css/Sidebar.css";
+// import { PanelMenu } from "primereact/panelmenu";
+// import { MenuItem } from "primereact/menuitem";
+// import { useNavigate } from "react-router-dom";
+
+// export default function BasicDemo() {
+//   const Authority = {
+//     MANAGER: "MANAGER",
+//     ADMIN: "ADMIN",
+//     SUPER_ADMIN: "SUPER_ADMIN",
+//   };
+//   const authority = Authority.MANAGER;
+//   const navigate = useNavigate();
+
+//   let items: MenuItem[] = [];
+
+//   switch (authority) {
+//     case Authority.ADMIN:
+//       items = [
+//         {
+//           label: "Quiz",
+//           icon: "pi pi-file",
+//           items: [
+//             {
+//               label: "Make New Quiz",
+//               icon: "pi pi-file",
+//               command: () => navigate("/Quiz"),
+//             },
+//             {
+//               label: "See Past Quizes",
+//               icon: "pi pi-image",
+//               items: [
+//                 {
+//                   label: "Month",
+//                   icon: "pi pi-image",
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       ];
+//       break;
+//     case Authority.MANAGER:
+//       {
+
+//         items = [
+//           {
+//             label: "Prepaid Service",
+//             icon: "pi pi-desktop",
+//             items: [
+//               {
+//                 label: "Create",
+//                 icon: "pi pi-plus",
+//               command: () => navigate("/Service/create"),
+//             },
+//             {
+//               label: "All Service",
+//               icon: "pi pi-desktop",
+//               command: () => navigate("/Service/All"),
+//             },
+//           ],
+//         },
+//       ];
+//       break;
+//     }
+//     case Authority.SUPER_ADMIN:
+//       break;
+//     default:
+//       break;
+//   }
+
+//   return (
+//     <div className="card">
+//       <PanelMenu model={items} className="w-full md:w-18rem" />
+//     </div>
+//   );
+// }
+
 import "../css/Sidebar.css";
 import { PanelMenu } from "primereact/panelmenu";
 import { MenuItem } from "primereact/menuitem";
 import { useNavigate } from "react-router-dom";
 
 export default function BasicDemo() {
+ 
+
   const navigate = useNavigate();
   const items: MenuItem[] = [
     {
@@ -44,21 +124,19 @@ export default function BasicDemo() {
       ],
     },
     {
-      label: "Pushp",
+      label: "Prepaid Service",
       icon: "pi pi-desktop",
       items: [
         {
-          label: "Purple",
-          icon: "pi pi-mobile",
+          label: "Create",
+          icon: "pi pi-plus",	
+          command: () => navigate("/Service/create"),
         },
         {
-          label: "Saffron",
+          label: "All Service",
           icon: "pi pi-desktop",
-        },
-        {
-          label: "Magenta",
-          icon: "pi pi-tablet",
-        },
+          command: () => navigate("/Service/All"),
+        }
       ],
     },
   ];
@@ -69,3 +147,4 @@ export default function BasicDemo() {
     </div>
   );
 }
+

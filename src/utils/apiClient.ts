@@ -3,7 +3,7 @@ import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
 const apiClient = axios.create({
-  baseURL: "http://192.168.0.103:3000/",
+  baseURL: "http://192.168.0.104:3000/",
   // baseURL: "http://192.168.5.70:3001/",
   // baseURL: "http://103.26.48.209:3001/",
   // baseURL: "http://192.168.137.1:3000/",
@@ -76,7 +76,7 @@ apiClient.interceptors.response.use(
       }
       if (error.response.status < 500) {
         error.message = error.response.data.message;
-        return Promise.reject(error);
+        return Promise.reject(new Error(error.message));
       }
       return Promise.reject(error);
     } catch (_) {

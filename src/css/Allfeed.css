@@ -28,6 +28,7 @@
 
 .middle_feed{
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
 }
 .all_container {
@@ -55,9 +56,6 @@
     gap: 10px;
   }
   
-  .middle_feed {
-    flex-grow: 1;
-  }
   
   .allfeedno {
     font-weight: bold;
@@ -179,6 +177,23 @@ input[type="text"]:focus {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  /* margin-bottom: 15px; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+  font-size: 16px;
+}
+
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #007bff; 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
 select {
   width: 100%;
   padding: 10px;
@@ -219,7 +234,7 @@ input[type="date"]:focus {
 }
 
 .saasd{
-  width: 35%;
+  width: 45%;
 }
 
 textarea {
@@ -231,4 +246,17 @@ textarea {
   resize: vertical; 
   box-sizing: border-box; 
  
+}
+
+
+.image-container {
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  bottom: 10px; /* Adjust as needed */
+  right: 5px; /* Adjust as needed */
+  padding: 8px;
+  z-index: 1; 
 }

@@ -11,6 +11,7 @@ import { Button } from "primereact/button";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { FeedParams, useCreateFeedQuery, useGetalluser } from "../queries/feed";
 import { ListBox } from "primereact/listbox";
+import { Chips, ChipsChangeEvent } from "primereact/chips";
 
 export default function FloatLabelDemo() {
   const {
@@ -18,6 +19,7 @@ export default function FloatLabelDemo() {
     isPending: isFeedCreatePending,
     isSuccess,
     isError,
+    error,
   } = useCreateFeedQuery();
   const toast = useRef<Toast | null>(null);
 
@@ -65,7 +67,7 @@ export default function FloatLabelDemo() {
     if (isError) {
       toast.current?.show({
         severity: "error",
-        summary: "Rejected",
+        summary: error.message,
         detail: "Feed Not Posted",
         life: 3000,
       });
@@ -82,22 +84,21 @@ export default function FloatLabelDemo() {
   };
 
   const cities: City[] =
-    data?.data?.map((item: { name: string; _id: string }) => ({
+    data?.data?.map((item: { name: string; _id: string; url: string }) => ({
       name: item.name,
       _id: item._id,
-      // roll: item.roll,
+      url: item.url,
     })) || [];
 
   interface City {
+    url: string;
     name: string;
     _id: string;
-    // roll:string;
   }
 
   const [selectedNames, setSelectedNames] = useState<City[]>([]);
   return (
     <Mainlayout>
-      {/* {JSON.stringify()} */}
       <div className="feed_container">
         <h3 className="feee">Creation of Feed</h3>
         <div className="field col-12 md:col-4">
@@ -136,6 +137,28 @@ export default function FloatLabelDemo() {
           </span>
         </div>
         <div className="field col-12 md:col-4">
+          <Chips
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "10px",
+              width: "100%",
+            }}
+            itemTemplate={CustomChip}
+            value={selectedNames.map((city) => {
+              return JSON.stringify({ name: city.name, url: city.url });
+            })}
+            onChange={(e: ChipsChangeEvent) => {
+              if (e.value) {
+                const selectedCities = e.value.map((value: string) =>
+                  JSON.parse(value)
+                );
+                setSelectedNames(selectedCities);
+              }
+            }}
+            separator=","
+          />
+
           <ListBox
             filter
             multiple
@@ -143,6 +166,17 @@ export default function FloatLabelDemo() {
             onChange={(e) => setSelectedNames(e.value)}
             options={cities}
             optionLabel="name"
+            itemTemplate={(option: City) => (
+              <div className="p-multiselect-representative-option">
+                <img
+                  src={option.url}
+                  alt={option.name}
+                  width="30"
+                  height="30"
+                />
+                <span>{option.name}</span>
+              </div>
+            )}
             className="w-full"
           />
         </div>
@@ -187,5 +221,17 @@ export default function FloatLabelDemo() {
         </div>
       </div>
     </Mainlayout>
+  );
+}
+
+function CustomChip(value: string) {
+  const { name, url } = JSON.parse(value);
+  return (
+    <>
+      <div className="imagescomes">
+        <img src={url} alt="img" />
+        <h4 style={{ marginTop: "10px", marginBottom: "10px" }}> {name}</h4>
+      </div>
+    </>
   );
 }

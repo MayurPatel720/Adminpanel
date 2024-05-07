@@ -7,8 +7,7 @@ const Maincom = () => {
         <div className="container">
           <h1>Welcome to the Avashyakam</h1>
           <p>
-            We're excited to have you on board. Let's create awesome user
-            experiences together.
+            We're excited to have you on board. Let's create awesome Avashyakam together.
           </p>
         </div>
       </Mainlayout>

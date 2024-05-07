@@ -38,3 +38,41 @@ button[aria-label="Upload"]{
     height: 250px;
 }
 
+.p-chips-input-token{
+    display: none;
+}
+
+.p-chips-multiple-container{
+    width: 750px;
+    min-height: 35px;
+}
+
+.imagescomes{
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+}
+
+.imagescomes img{
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+
+.p-chips-token{
+    margin: 5px;
+    padding: 0px 8px;
+    border-radius: 20px;
+}
+
+.p-multiselect-representative-option{
+    display: flex;
+    align-items: center;
+}
+.p-multiselect-representative-option img{
+   border-radius: 50%;
+   margin-right: 10px;
+}

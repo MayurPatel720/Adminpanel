@@ -7,7 +7,7 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-// import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+
 import reportWebVitals from './reportWebVitals';
 import { PrimeReactProvider } from "primereact/api";
 const root = ReactDOM.createRoot(
