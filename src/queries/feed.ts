@@ -1,8 +1,8 @@
 import {
-  useMutation,
   MutationFunction,
-  useQuery,
   QueryFunction,
+  useMutation,
+  useQuery,
 } from "@tanstack/react-query";
 import apiClient from "../utils/apiClient";
 import { ApiResponse } from "../utils/apiResponse";
@@ -21,8 +21,6 @@ const alluser: QueryFunction<
   any
 > = async () => {
   const res = await apiClient.get("api/user/allUsers");
-  // console.log(res.data.data[0].roll);
-
   return res.data;
 };
 const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
@@ -43,6 +41,12 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   });
   Array.from(FeedImgVi).forEach((file, index) => {
     formData.append(`FeedImgVi`, file, file.name);
+  });
+  Array.from(users).forEach((user, i) => {
+    formData.append(`users[${i}]`, user);
+  });
+  Array.from(FeedImgVi).forEach((file) => {
+    formData.append("FeedImgVi", file, file.name);
   });
 
   const res = await apiClient.post("api/feed/insertFeed", formData);
