@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toast } from "primereact/toast";
+import { createContext, useContext, useRef } from "react";
 import {
   Navigate,
   Route,
@@ -47,113 +49,142 @@ const authorityRoutesMap = {
     "serviceCreate",
     "serviceAll",
     "quiz",
+    "AllQuiz",
+    "group",
+    "allgroup",
   ],
 };
 
+export const ToastContext = createContext<any>(undefined);
+
+export const useToast = () => {
+  const toastContext = useContext(ToastContext);
+  return toastContext;
+};
+
+function ToastContextProvider({ children }: any) {
+  const toast = useRef<Toast | null>(null);
+
+  return (
+    <ToastContext.Provider value={toast}>
+      {children}
+      <Toast ref={toast}></Toast>
+    </ToastContext.Provider>
+  );
+}
+
 function App() {
-  const authority = Authority.MANAGER;
+  const authority = Authority.SUPER_ADMIN;
   const allowedRoutes = authorityRoutesMap[authority] || [];
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/unauthorised" element={<Unauthorized />} />;
-          {allowedRoutes.map((routeKey) => {
-            switch (routeKey) {
-              case "main":
-                return <Route key={routeKey} path="/" element={<Maincom />} />;
-              case "login":
-                return (
-                  <Route key={routeKey} path="/login" element={<Login />} />
-                );
-              case "feedCreate":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/Feed/Create"
-                    element={<Feed />}
-                  />
-                );
-              case "feedAll":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/Feed/all"
-                    element={<AllFeed />}
-                  />
-                );
-              case "serviceCreate":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/Service/create"
-                    element={<ServiceCreate />}
-                  />
-                );
-              case "serviceAll":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/Service/All"
-                    element={<AllService />}
-                  />
-                );
-              case "quiz":
-                return (
-                  <Route key={routeKey} path="/quiz" element={<Quiz2 />} />
-                );
-              case "allquiz":
-                return (
-                  <Route key={routeKey} path="/allquiz" element={<AllQuiz />} />
-                );
-              case "group":
-                return (
-                  <Route key={routeKey} path="/group" element={<Group />} />
-                );
-              case "allgroup":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/allgroup"
-                    element={<AllGroups />}
-                  />
-                );
-              case "editquiz":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/editquiz/:id"
-                    element={<EditQuiz />}
-                  />
-                );
-              case "editgroup":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/editgroup/:id"
-                    element={<EditGroups />}
-                  />
-                );
-              case "quizmarks":
-                return (
-                  <Route
-                    key={routeKey}
-                    path="/quizmarks"
-                    element={<ShowMarks />}
-                  />
-                );
-              // case "kao":
-              //   return <Route key={routeKey} path="/kao" element={<Kao />} />;
+    <ToastContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            <Route path="/unauthorised" element={<Unauthorized />} />;
+            {allowedRoutes.map((routeKey) => {
+              switch (routeKey) {
+                case "main":
+                  return (
+                    <Route key={routeKey} path="/" element={<Maincom />} />
+                  );
+                case "login":
+                  return (
+                    <Route key={routeKey} path="/login" element={<Login />} />
+                  );
+                case "feedCreate":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/Feed/Create"
+                      element={<Feed />}
+                    />
+                  );
+                case "feedAll":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/Feed/all"
+                      element={<AllFeed />}
+                    />
+                  );
+                case "serviceCreate":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/Service/create"
+                      element={<ServiceCreate />}
+                    />
+                  );
+                case "serviceAll":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/Service/All"
+                      element={<AllService />}
+                    />
+                  );
+                case "quiz":
+                  return (
+                    <Route key={routeKey} path="/quiz" element={<Quiz2 />} />
+                  );
+                case "AllQuiz":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/AllQuiz"
+                      element={<AllQuiz />}
+                    />
+                  );
+                case "group":
+                  return (
+                    <Route key={routeKey} path="/group" element={<Group />} />
+                  );
+                case "allgroup":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/allgroup"
+                      element={<AllGroups />}
+                    />
+                  );
+                case "editquiz":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/editquiz/:id"
+                      element={<EditQuiz />}
+                    />
+                  );
+                case "editgroup":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/editgroup/:id"
+                      element={<EditGroups />}
+                    />
+                  );
+                case "quizmarks":
+                  return (
+                    <Route
+                      key={routeKey}
+                      path="/quizmarks"
+                      element={<ShowMarks />}
+                    />
+                  );
+                // case "kao":
+                //   return <Route key={routeKey} path="/kao" element={<Kao />} />;
 
-              default:
-                return null;
-            }
-          })}
-          <Route path="*" element={<Navigate to="/unauthorised" />} />
-        </Routes>
-      </Router>
-    </QueryClientProvider>
+                default:
+                  return null;
+              }
+            })}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Router>
+      </QueryClientProvider>
+    </ToastContextProvider>
   );
 }
 

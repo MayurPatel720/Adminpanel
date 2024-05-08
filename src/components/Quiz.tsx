@@ -1,10 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
+import { Checkbox } from "primereact/checkbox";
+import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
+import { ListBox } from "primereact/listbox";
 import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
 import {
@@ -12,10 +15,7 @@ import {
   useAllGroupbyId,
   useAllGroups,
 } from "../queries/authentication";
-import { useNavigate } from "react-router-dom";
 import { useGetalluser } from "../queries/feed";
-import { ListBox } from "primereact/listbox";
-import { Chips, ChipsChangeEvent } from "primereact/chips";
 
 interface QuizProps {}
 interface Allnames {
@@ -757,145 +757,147 @@ const Quiz: React.FC<QuizProps> = () => {
 
   return (
     <Mainlayout>
-      {flag === 0 && (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <label htmlFor="question">Title</label>
-            <InputText
-              type="text"
-              value={title}
-              style={{ marginRight: "100px", height: "43px" }}
-              className="p-inputtext-lg"
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <div style={{ display: "flex", marginTop: "40px" }}>
-              <div style={{ marginRight: "100px" }}>
-                <label htmlFor="question">Start Time</label>
-                <Calendar
-                  value={starttime}
-                  style={{ height: "43px", width: "234px" }}
-                  onChange={(e) => {
-                    const temp = (e.value as Date) || null;
-                    setStartTime(temp);
-                  }}
-                  showTime
-                  hourFormat="12"
-                />
-              </div>
-              <div>
-                <label htmlFor="question">End Time</label>
-                <Calendar
-                  value={endtime}
-                  style={{ height: "43px", width: "234px" }}
-                  onChange={(e) => {
-                    const temp = (e.value as Date) || null;
-                    setEndTime(temp);
-                  }}
-                  showTime
-                  hourFormat="12"
-                />
-              </div>
-            </div>
-            <div style={{ marginTop: "40px" }}>
-              <label htmlFor="question">
-                How many questions do you want to add ?{" "}
-              </label>
-              <InputText
-                style={{ width: "234px", height: "43px" }}
-                placeholder="Number"
-                onChange={(e) => {
-                  setNumque(e.target.value);
-                }}
-              />
-            </div>
-            <div style={{ marginTop: "40px" }}>
-              <label htmlFor="question">Users Able to Attend Quiz</label>
-              <Chips
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  // height: "80px",
-                  // overflow: "scroll",
-                  // marginTop: "10px",
-                  // width: "100%",
-                }}
-                value={num}
-                onChange={(e: ChipsChangeEvent) => {
-                  setNum(e.value ? e.value : []);
-                  const curr = e.value;
-                  const abc: Allnames[] = [];
-                  curr?.map((d) => {
-                    for (let i = 0; i < allUsers.length; i++) {
-                      if (allUsers[i].roll === d) {
-                        abc.push({
-                          name: allUsers[i].name,
-                          _id: allUsers[i]._id,
-                          roll: allUsers[i].roll,
-                        } as Allnames);
-                      }
-                    }
-                  });
-                  setSelectedNames(abc);
-                }}
-                separator=","
-              />
-            </div>
+      <div className="feed_container">
+        <h3>Create Quiz</h3>
+        {flag === 0 && (
+          <div>
             <div
               style={{
-                width: "100%",
                 display: "flex",
-                // justifyContent: "space-around",
-                marginTop: "40px",
+                flexDirection: "column",
               }}
-              // className="field col-12 md:col-4"
             >
-              <div style={{ marginRight: "100px" }}>
-                <ListBox
-                  filter
-                  value={selectedgroup}
+              <label htmlFor="question">Title</label>
+              <InputText
+                type="text"
+                value={title}
+                style={{ marginRight: "100px", height: "43px" }}
+                className="p-inputtext-lg"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <div style={{ display: "flex", marginTop: "40px" }}>
+                <div style={{ marginRight: "100px" }}>
+                  <label htmlFor="question">Start Time</label>
+                  <Calendar
+                    value={starttime}
+                    style={{ height: "43px", width: "234px" }}
+                    onChange={(e) => {
+                      const temp = (e.value as Date) || null;
+                      setStartTime(temp);
+                    }}
+                    showTime
+                    hourFormat="12"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="question">End Time</label>
+                  <Calendar
+                    value={endtime}
+                    style={{ height: "43px", width: "234px" }}
+                    onChange={(e) => {
+                      const temp = (e.value as Date) || null;
+                      setEndTime(temp);
+                    }}
+                    showTime
+                    hourFormat="12"
+                  />
+                </div>
+              </div>
+              <div style={{ marginTop: "40px" }}>
+                <label htmlFor="question">
+                  How many questions do you want to add ?{" "}
+                </label>
+                <InputText
+                  style={{ width: "234px", height: "43px" }}
+                  placeholder="Number"
                   onChange={(e) => {
-                    setSelectedgroup(e.value);
-                    if (e.value == null || e.value?._id == "all") {
-                      setSelectedGroupId("");
-                      setSelectedgroup([]);
-                      if (e.value == null && fla == "10") {
-                        setSelectedGroupId("");
-                        setSelectedgroup([]);
-                        setSelectedNames([]);
-                        setNum([]);
-                        setfla("0");
-                      } else if (e.value?._id == "all" && fla == "0") {
-                        setfla("10");
-                        setSelectedNames(allUsers);
-                        setSelectedgroup(e.value);
-                        setNum(allUsers.map((user) => user.roll));
-                      }
-                    } else {
-                      setSelectedGroupId("");
-                      setSelectedGroupId(e.value ? e.value._id : "");
-                      console.log("id of selectedgroup ", selectedGroupId);
-                    }
-                    // groupUpdate();
+                    setNumque(e.target.value);
                   }}
-                  options={allGroup}
-                  optionLabel="name"
-                  className="w-full"
+                />
+              </div>
+              <div style={{ marginTop: "40px" }}>
+                <label htmlFor="question">Users Able to Attend Quiz</label>
+                <Chips
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // height: "80px",
+                    // overflow: "scroll",
+                    // marginTop: "10px",
+                    // width: "100%",
+                  }}
+                  value={num}
+                  onChange={(e: ChipsChangeEvent) => {
+                    setNum(e.value ? e.value : []);
+                    const curr = e.value;
+                    const abc: Allnames[] = [];
+                    curr?.map((d) => {
+                      for (let i = 0; i < allUsers.length; i++) {
+                        if (allUsers[i].roll === d) {
+                          abc.push({
+                            name: allUsers[i].name,
+                            _id: allUsers[i]._id,
+                            roll: allUsers[i].roll,
+                          } as Allnames);
+                        }
+                      }
+                    });
+                    setSelectedNames(abc);
+                  }}
+                  separator=","
                 />
               </div>
               <div
-              // style={{ marginTop: "10px" }}
-              // className="field col-12 md:col-4"
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  // justifyContent: "space-around",
+                  marginTop: "40px",
+                }}
+                // className="field col-12 md:col-4"
               >
-                <>
-                  {/* {selectedGroupUsers?.data?.users?.map(
+                <div style={{ marginRight: "100px" }}>
+                  <ListBox
+                    filter
+                    value={selectedgroup}
+                    onChange={(e) => {
+                      setSelectedgroup(e.value);
+                      if (e.value == null || e.value?._id == "all") {
+                        setSelectedGroupId("");
+                        setSelectedgroup([]);
+                        if (e.value == null && fla == "10") {
+                          setSelectedGroupId("");
+                          setSelectedgroup([]);
+                          setSelectedNames([]);
+                          setNum([]);
+                          setfla("0");
+                        } else if (e.value?._id == "all" && fla == "0") {
+                          setfla("10");
+                          setSelectedNames(allUsers);
+                          setSelectedgroup(e.value);
+                          setNum(allUsers.map((user) => user.roll));
+                        }
+                      } else {
+                        setSelectedGroupId("");
+                        setSelectedGroupId(e.value ? e.value._id : "");
+                        console.log("id of selectedgroup ", selectedGroupId);
+                      }
+                      // groupUpdate();
+                    }}
+                    options={allGroup}
+                    optionLabel="name"
+                    className="w-full"
+                  />
+                </div>
+                <div
+                // style={{ marginTop: "10px" }}
+                // className="field col-12 md:col-4"
+                >
+                  <>
+                    {/* {selectedGroupUsers?.data?.users?.map(
                       (user: any) => user.roll + ", "
                     )} */}
-                  {/* <ListBox
+                    {/* <ListBox
                       filter
                       multiple
                       // value={selectedNames}
@@ -920,64 +922,65 @@ const Quiz: React.FC<QuizProps> = () => {
                       optionLabel="name"
                       className="w-full"
                     /> */}
-                  {/* {const temp=(selectedGroupUsers?.data?.users || [])
+                    {/* {const temp=(selectedGroupUsers?.data?.users || [])
                         .map((user: any) => ({
                           roll: user.roll,
                           name: user.roll + " " + user.name,
                           _id: user._id,
                         }))} */}
-                  <ListBox
-                    filter
-                    multiple
-                    value={(selectedGroupUsers?.data?.users || [])
-                      .map((user: any) => ({
-                        roll: user.roll,
-                        name: user.roll + " " + user.name,
-                        _id: user._id,
-                      }))
-                      .concat(selectedNames || [])}
-                    onChange={(e) => {
-                      const uniqueValues = e.value.filter(
-                        (v: any, i: any, a: any) =>
-                          a.findIndex((t: any) => t.roll === v.roll) === i
-                      );
-                      setSelectedNames(uniqueValues);
-                      const curr = uniqueValues;
-                      const temp = curr.map((d: { roll: string }) => d.roll);
-                      setNum(temp);
-                    }}
-                    options={allUsers}
-                    optionLabel="name"
-                    className="w-full"
-                  />
-                </>
+                    <ListBox
+                      filter
+                      multiple
+                      value={(selectedGroupUsers?.data?.users || [])
+                        .map((user: any) => ({
+                          roll: user.roll,
+                          name: user.roll + " " + user.name,
+                          _id: user._id,
+                        }))
+                        .concat(selectedNames || [])}
+                      onChange={(e) => {
+                        const uniqueValues = e.value.filter(
+                          (v: any, i: any, a: any) =>
+                            a.findIndex((t: any) => t.roll === v.roll) === i
+                        );
+                        setSelectedNames(uniqueValues);
+                        const curr = uniqueValues;
+                        const temp = curr.map((d: { roll: string }) => d.roll);
+                        setNum(temp);
+                      }}
+                      options={allUsers}
+                      optionLabel="name"
+                      className="w-full"
+                    />
+                  </>
+                </div>
               </div>
+              <Button
+                style={{ width: "200px", marginTop: "40px" }}
+                onClick={Generateque}
+              >
+                Generate Quiz
+              </Button>
             </div>
-            <Button
-              style={{ width: "200px", marginTop: "40px" }}
-              onClick={Generateque}
+          </div>
+        )}
+        {flag === 1 && (
+          <div>
+            <div>{disQuestions()}</div>
+            <div>{showContant()}</div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+              }}
             >
-              Generate Quiz
-            </Button>
+              <Toast ref={toast}></Toast>
+              <Button onClick={Submittodatabase}>SUBMIT</Button>
+            </div>
           </div>
-        </div>
-      )}
-      {flag === 1 && (
-        <div>
-          <div>{disQuestions()}</div>
-          <div>{showContant()}</div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <Toast ref={toast}></Toast>
-            <Button onClick={Submittodatabase}>SUBMIT</Button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </Mainlayout>
   );
 };

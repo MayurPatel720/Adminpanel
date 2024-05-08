@@ -1,11 +1,13 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "primereact/button";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import Mainlayout from "../layout/Mainlayout";
 import { DeleteGroup, useAllGroups } from "../queries/authentication";
-import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import EmptyView from "./EmptyView";
+import Loading from "./Loading";
 
 interface groupdata {
   users: string[];
@@ -99,10 +101,20 @@ const AllGroups: React.FC<QuizProps> = () => {
   //   console.log(groupdata);
   const toast = useRef<Toast>(null);
 
+  // For Empty Data
+  if (isgroupSuccess && groupdata?.data?.length === 0) {
+    return (
+      <Mainlayout>
+        <EmptyView />
+      </Mainlayout>
+    );
+  }
+
+  // For Success
   return (
     <Mainlayout>
       <div>
-        {isLoading && <div>Loading...</div>}
+        {isLoading && <Loading />}
         {isgroupSuccess && (
           <div>
             <Toast ref={toast} />

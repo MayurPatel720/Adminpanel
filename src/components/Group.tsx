@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import Mainlayout from "../layout/Mainlayout";
-import { useGetalluser } from "../queries/feed";
-import { ListBox } from "primereact/listbox";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Chips, ChipsChangeEvent } from "primereact/chips";
-import { Groupaddmutation } from "../queries/authentication";
+import { InputText } from "primereact/inputtext";
+import { ListBox } from "primereact/listbox";
 import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Mainlayout from "../layout/Mainlayout";
+import { Groupaddmutation } from "../queries/authentication";
+import { useGetalluser } from "../queries/feed";
 
 interface QuizProps {}
 interface Allnames {
@@ -53,9 +53,11 @@ const Group: React.FC<QuizProps> = () => {
       name: title,
     });
   };
+
   return (
     <Mainlayout>
-      {
+      <div className="feed_container">
+        <h3>Create Group</h3>
         <div>
           <div>
             <div>
@@ -133,7 +135,7 @@ const Group: React.FC<QuizProps> = () => {
             ></Button>
           </div>
         </div>
-      }
+      </div>
     </Mainlayout>
   );
 };

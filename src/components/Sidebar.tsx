@@ -1,11 +1,9 @@
-import "../css/Sidebar.css";
-import { PanelMenu } from "primereact/panelmenu";
 import { MenuItem } from "primereact/menuitem";
+import { PanelMenu } from "primereact/panelmenu";
 import { useNavigate } from "react-router-dom";
+import "../css/Sidebar.css";
 
 export default function BasicDemo() {
- 
-
   const navigate = useNavigate();
   const items: MenuItem[] = [
     {
@@ -20,12 +18,23 @@ export default function BasicDemo() {
         {
           label: "See Past Quizes",
           icon: "pi pi-image",
-          items: [
-            {
-              label: "Month",
-              icon: "pi pi-image",
-            },
-          ],
+          command: () => navigate("/AllQuiz"),
+        },
+      ],
+    },
+    {
+      label: "Group",
+      icon: "pi pi-file",
+      items: [
+        {
+          label: "Make New Group",
+          icon: "pi pi-file",
+          command: () => navigate("/group"),
+        },
+        {
+          label: "See Past Groups",
+          icon: "pi pi-image",
+          command: () => navigate("/allgroup"),
         },
       ],
     },
@@ -45,21 +54,21 @@ export default function BasicDemo() {
         },
       ],
     },
-    
+
     {
       label: "Prepaid Service",
       icon: "pi pi-desktop",
       items: [
         {
           label: "Create",
-          icon: "pi pi-plus",	
+          icon: "pi pi-plus",
           command: () => navigate("/Service/create"),
         },
         {
           label: "All Service",
           icon: "pi pi-desktop",
           command: () => navigate("/Service/All"),
-        }
+        },
       ],
     },
   ];
@@ -70,4 +79,3 @@ export default function BasicDemo() {
     </div>
   );
 }
-

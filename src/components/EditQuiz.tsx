@@ -1,25 +1,25 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
+import { Checkbox } from "primereact/checkbox";
+import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
+import { ListBox } from "primereact/listbox";
 import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useToast } from "../App";
 import "../css/quiz.css";
 import Mainlayout from "../layout/Mainlayout";
-import { Chips, ChipsChangeEvent } from "primereact/chips";
-import { ListBox } from "primereact/listbox";
-import { useNavigate, useParams } from "react-router-dom";
 import {
   AddQuiz,
-  DeleteQuiz,
-  useUpdateQuiz,
-  useAllQuizbyId,
   useAllGroupbyId,
   useAllGroups,
+  useAllQuizbyId,
+  useUpdateQuiz,
 } from "../queries/authentication";
-import { ToastContext, useToast } from "../App";
 import { useGetalluser } from "../queries/feed";
+import Loading from "./Loading";
 interface QuizProps {}
 interface Allnames {
   name: string;
@@ -692,9 +692,8 @@ const EditQuiz: React.FC<QuizProps> = () => {
   return (
     <Mainlayout>
       <div>
-        {/* {id} */}
         {isLoading ? (
-          <div>Loading...</div>
+          <Loading />
         ) : (
           <div>
             <div>{showHeader()}</div>

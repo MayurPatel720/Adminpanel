@@ -12,6 +12,7 @@ import { Button } from "primereact/button";
 import { Chips, ChipsChangeEvent } from "primereact/chips";
 import { ListBox } from "primereact/listbox";
 import { InputText } from "primereact/inputtext";
+import Loading from "./Loading";
 
 interface Allnames {
   name: string;
@@ -94,7 +95,7 @@ const EditGroups: React.FC<QuizProps> = () => {
   return (
     <Mainlayout>
       {isLoading ? (
-        <div className="quiz-container">Loading...</div>
+        <Loading />
       ) : (
         <div>
           <div>
