@@ -1,13 +1,12 @@
 import axios from "axios";
-import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { API_BASE_URL } from "./config";
+import { getLocalStorage, setLocalStorage } from "./localStorage";
+
+console.log(API_BASE_URL, "---------------");
 
 const apiClient = axios.create({
-  baseURL: "https://avashyakam.sngmyhome.com/",
-  // baseURL: "http://192.168.0.104:3000/",
-  // baseURL: "http://192.168.5.70:3001/",
-  // baseURL: "http://103.26.48.209:3001/",
-  // baseURL: "http://192.168.137.1:3000/",
+  baseURL: API_BASE_URL,
 });
 
 apiClient.interceptors.request.use(
