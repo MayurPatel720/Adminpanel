@@ -1,15 +1,14 @@
-// AllQuiz.tsx
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "primereact/button";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import "../css/Allquiz.css";
 import Mainlayout from "../layout/Mainlayout";
 import { DeleteQuiz, useAllQuiz } from "../queries/authentication";
-import "../css/Allquiz.css";
-import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-
-interface QuizProps {}
+import EmptyView from "./EmptyView";
+import Loading from "./Loading";
 
 interface QuizData {
   _id: string;
@@ -64,7 +63,7 @@ const QuizItem: React.FC<{ quiz: QuizData; onDelete: Function }> = ({
   );
 };
 
-const AllQuiz: React.FC<QuizProps> = () => {
+const AllQuiz = () => {
   const {
     data: quizdata,
     isSuccess: isquizsuccess,
@@ -100,12 +99,15 @@ const AllQuiz: React.FC<QuizProps> = () => {
       });
     }
   }, [isdeleteSuccess, isdeleteError]);
+
   return (
     <Mainlayout>
       <Toast ref={toast} />
       <div>
-        {isLoading && <div>Loading...</div>}
-        {isquizsuccess && (
+        {isLoading && <Loading />}
+        {isquizsuccess && quizdata.data?.length === 0 ? (
+          <EmptyView message="No Quizes Created Yet!" />
+        ) : (
           <div>
             <Toast ref={toast} />
             {quizdata?.data.map((quiz: QuizData) => (

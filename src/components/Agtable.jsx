@@ -6,6 +6,7 @@ import { useRefundservice, useTabledata } from "../queries/AllService";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { confirmDialog } from "primereact/confirmdialog";
+import Loading from "./Loading";
 
 export const CustomButtonComponent = ({ data }) => {
   const {
@@ -137,7 +138,7 @@ function App({ sid }) {
   const paginationPageSize = 10;
 
   if (isLoading) {
-    return <>Loading...</>;
+    return <Loading />;
   }
 
   return (

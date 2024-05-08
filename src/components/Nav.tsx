@@ -1,10 +1,9 @@
-import React from "react";
-import "../css/Nav.css";
-import { Menubar } from "primereact/menubar";
-import { InputText } from "primereact/inputtext";
-import { MenuItem } from "primereact/menuitem";
 import { Avatar } from "primereact/avatar";
+import { Menubar } from "primereact/menubar";
+import { MenuItem } from "primereact/menuitem";
+import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import "../css/Nav.css";
 
 interface Item {
   label: string;
@@ -33,52 +32,52 @@ const TemplateDemo: React.FC = () => {
       icon: "pi pi-home",
       command: () => navigate("/"),
     },
-    {
-      label: "Features",
-      icon: "pi pi-star",
-    },
-    {
-      label: "Projects",
-      icon: "pi pi-search",
-      items: [
-        {
-          label: "Core",
-          icon: "pi pi-bolt",
-          shortcut: "⌘+S",
-          template: itemRenderer,
-        },
-        {
-          label: "Blocks",
-          icon: "pi pi-server",
-          shortcut: "⌘+B",
-          template: itemRenderer,
-        },
-        {
-          label: "UI Kit",
-          icon: "pi pi-pencil",
-          shortcut: "⌘+U",
-          template: itemRenderer,
-        },
-        {
-          label: "Templates",
-          icon: "pi pi-palette",
-          items: [
-            {
-              label: "Apollo",
-              icon: "pi pi-palette",
-              badge: 2,
-              template: itemRenderer,
-            },
-            {
-              label: "Ultima",
-              icon: "pi pi-palette",
-              badge: 3,
-              template: itemRenderer,
-            },
-          ],
-        },
-      ],
-    },
+    // {
+    //   label: "Features",
+    //   icon: "pi pi-star",
+    // },
+    // {
+    //   label: "Projects",
+    //   icon: "pi pi-search",
+    //   items: [
+    //     {
+    //       label: "Core",
+    //       icon: "pi pi-bolt",
+    //       shortcut: "⌘+S",
+    //       template: itemRenderer,
+    //     },
+    //     {
+    //       label: "Blocks",
+    //       icon: "pi pi-server",
+    //       shortcut: "⌘+B",
+    //       template: itemRenderer,
+    //     },
+    //     {
+    //       label: "UI Kit",
+    //       icon: "pi pi-pencil",
+    //       shortcut: "⌘+U",
+    //       template: itemRenderer,
+    //     },
+    //     {
+    //       label: "Templates",
+    //       icon: "pi pi-palette",
+    //       items: [
+    //         {
+    //           label: "Apollo",
+    //           icon: "pi pi-palette",
+    //           badge: 2,
+    //           template: itemRenderer,
+    //         },
+    //         {
+    //           label: "Ultima",
+    //           icon: "pi pi-palette",
+    //           badge: 3,
+    //           template: itemRenderer,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
   ];
 
   const start = (
@@ -95,16 +94,16 @@ const TemplateDemo: React.FC = () => {
   );
   const end = (
     <div className="flex align-items-center gap-2">
-      <InputText
+      {/* <InputText
         placeholder="Search"
         type="text"
         className="w-8rem sm:w-auto"
-      />
+      /> */}
       <Avatar
         onClick={() => {
           navigate("/login");
         }}
-        image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
+        image="https://cdn-icons-png.freepik.com/256/747/747376.png?ga=GA1.1.891391406.1713304355&semt=ais_hybrid"
         shape="circle"
       />
     </div>

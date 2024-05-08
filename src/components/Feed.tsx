@@ -101,7 +101,7 @@ export default function FloatLabelDemo() {
     <Mainlayout>
       {/* {JSON.stringify()} */}
       <div className="feed_container">
-        <h3 className="feee">Creation of Feed</h3>
+        <h3 className="feee">Create Feed</h3>
         <div className="field col-12 md:col-4">
           <span className="p-float-label">
             <InputText

@@ -1,19 +1,19 @@
-import { InputText } from "primereact/inputtext";
-import Mainlayout from "../layout/Mainlayout";
-import React, { useEffect, useRef, useState } from "react";
-import "../css/Servicecreate.css";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
-import { Slider, SliderChangeEvent } from "primereact/slider";
-import { InputSwitch } from "primereact/inputswitch";
-import { Toast } from "primereact/toast";
-import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Button } from "primereact/button";
-import { useCreateQuery } from "../queries/Servicecreate";
-import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { Calendar } from "primereact/calendar";
+import { Chips } from "primereact/chips";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { InputNumber } from "primereact/inputnumber";
+import { InputSwitch } from "primereact/inputswitch";
+import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
 import { ListBox } from "primereact/listbox";
+import { Slider, SliderChangeEvent } from "primereact/slider";
+import { Toast } from "primereact/toast";
+import React, { useRef, useState } from "react";
+import "../css/Servicecreate.css";
+import Mainlayout from "../layout/Mainlayout";
 import { useGetalluser } from "../queries/feed";
+import { useCreateQuery } from "../queries/Servicecreate";
 import { formFactory, yup } from "../utils/formFactory";
 import FieldInfo from "./FieldInfo";
 
@@ -191,7 +191,7 @@ const ServiceCreate = () => {
           }}
         >
           <div className="container_service">
-            <h3 className="feee">Creation of Service</h3>
+            <h3 className="feee">Create Service</h3>
             <div className="field col-12 md:col-4">
               <span className="p-float-label">
                 <form.Field
@@ -367,7 +367,7 @@ const ServiceCreate = () => {
                   flexDirection: "column",
                 }}
                 value={num}
-                onChange={(e)=>{
+                onChange={(e) => {
                   setNum(e.value ? e.value : []);
                   const curr = e.value;
                   const abc: Allnames[] = [];
@@ -384,9 +384,7 @@ const ServiceCreate = () => {
                   });
                   setSelectedNames(abc);
                   console.log(selectedNames);
-                }
-                }
-      
+                }}
                 separator=","
               />
             </div>
