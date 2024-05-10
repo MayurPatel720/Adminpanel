@@ -3,7 +3,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { API_BASE_URL } from "./config";
 import { getLocalStorage, setLocalStorage } from "./localStorage";
 
-console.log(API_BASE_URL, "---------------");
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
