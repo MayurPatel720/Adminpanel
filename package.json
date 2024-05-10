@@ -21,8 +21,11 @@
     "build:flavor:linux": "PORT=3001 node -r dotenv/config node_modules/react-scripts/scripts/build.js",
     "start": " PORT=3001 node -r dotenv/config node_modules/react-scripts/scripts/start.js",
     "start:linux": "PORT=3001 react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "format": "prettier --write ."
   },
   "eslintConfig": {
     "extends": [
