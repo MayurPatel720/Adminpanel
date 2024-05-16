@@ -204,7 +204,7 @@ const AllService = () => {
                       fullScreen
                     >
                       <h2 style={{ marginTop: "0px" }}>
-                        All Haribhakto {selectedServiceId}
+                      Paid Users of this {service.title}
                       </h2>
                       <Agtable sid={selectedServiceId} />
                     </Sidebar>
@@ -232,8 +232,10 @@ const AllService = () => {
             >
               <h2>Updating Fields</h2>
               <div className="sideaa">
+                <label className="labelll" htmlFor="title">TITLE</label>
                 <input
                   type="text"
+                  id="title"
                   value={editedService?.title}
                   onChange={(e) =>
                     setEditedService({
@@ -242,7 +244,9 @@ const AllService = () => {
                     })
                   }
                 />
+                <label className="labelll" htmlFor="description">description</label>
                 <textarea
+                  id="description"
                   value={editedService?.description}
                   onChange={(e) =>
                     setEditedService({
@@ -251,6 +255,7 @@ const AllService = () => {
                     })
                   }
                 />
+                  <label className="labelll" htmlFor="Month">Month</label>
                 <select>
                   {months.map((item, index) => (
                     <option
@@ -262,6 +267,7 @@ const AllService = () => {
                     </option>
                   ))}
                 </select>
+                <label className="labelll" htmlFor="Year">Year</label>
                 <select>
                   {years.map((item, index) => (
                     <option
@@ -273,7 +279,9 @@ const AllService = () => {
                     </option>
                   ))}
                 </select>
+                <label className="labelll" htmlFor="num">ID NO</label>
                 <InputText
+                id="num"
                   onChange={(e) => {
                     setExtra(e.target.value);
                   }}
@@ -319,8 +327,9 @@ const AllService = () => {
                     })
                   }
                 />
-
+                <label className="labelll" htmlFor="date">expiry_date</label>
                 <input
+                id="expiry_date"
                   type="date"
                   value={
                     editedService?.expiry_date
@@ -336,7 +345,9 @@ const AllService = () => {
                     })
                   }
                 />
+                <label className="labelll" htmlFor="last_cancellation_date">last_cancellation_date</label>
                 <input
+                  id="last_cancellation_date"
                   type="date"
                   value={
                     editedService?.last_cancellation_date
@@ -366,7 +377,9 @@ const AllService = () => {
                     checked={checkeda}
                   />
                 </span>
+                <label className="labelll" htmlFor="cancel_fee_percentage">cancel_fee_percentage</label>
                 <input
+                  id="cancel_fee_percentage"
                   type="number"
                   value={
                     editedService?.cancel_fee_percentage !== undefined
@@ -381,7 +394,9 @@ const AllService = () => {
                     })
                   }
                 />
+                <label className="labelll" htmlFor="maxPaid_count">maxPaid_count</label>
                 <input
+                id="maxPaid_count"
                   type="number"
                   value={
                     editedService?.maxPaid_count !== undefined
@@ -396,7 +411,9 @@ const AllService = () => {
                     })
                   }
                 />
+                <label className="labelll" htmlFor="maxCancelCount">maxCancelCount</label>
                 <input
+                id="maxCancelCount"
                   type="number"
                   value={
                     editedService?.maxCancelCount !== undefined

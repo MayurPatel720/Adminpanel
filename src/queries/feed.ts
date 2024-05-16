@@ -36,17 +36,12 @@ const createFeed: MutationFunction<ApiResponse<any>, FeedParams> = async ({
   formData.append("description", description);
   formData.append("expires_at", expires_at);
   formData.append("level", level);
-  users.forEach((user, index) => {
-    formData.append(`users[${index}]`, user);
-  });
+
   Array.from(FeedImgVi).forEach((file, index) => {
     formData.append(`FeedImgVi`, file, file.name);
   });
   Array.from(users).forEach((user, i) => {
     formData.append(`users[${i}]`, user);
-  });
-  Array.from(FeedImgVi).forEach((file) => {
-    formData.append("FeedImgVi", file, file.name);
   });
 
   const res = await apiClient.post("api/feed/insertFeed", formData);
