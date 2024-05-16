@@ -9,13 +9,34 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { ListBox } from "primereact/listbox";
 import { Slider, SliderChangeEvent } from "primereact/slider";
 import { Toast } from "primereact/toast";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../css/Servicecreate.css";
 import Mainlayout from "../layout/Mainlayout";
 import { useGetalluser } from "../queries/feed";
 import { useCreateQuery } from "../queries/Servicecreate";
 import { formFactory, yup } from "../utils/formFactory";
 import FieldInfo from "./FieldInfo";
+
+interface Servicecreate {
+  month: Number;
+  year: Number;
+  title: string;
+  amount: Number;
+  users: Array<string>;
+  cancel_fee_percentage: Number;
+  expiry_date: string;
+  last_cancellation_date: string;
+  is_cancellable: boolean;
+  description: string;
+  maxPaid_count: Number;
+  maxCancelCount: Number;
+}
+
+interface Allnames {
+  name: string;
+  _id: string;
+  roll: string;
+}
 
 const ServiceCreate = () => {
   const [title, setTitle] = useState("");
@@ -39,8 +60,10 @@ const ServiceCreate = () => {
 
   const {
     mutate: createService,
-    // isSuccess: isUpdateSuccess,
-    // isError: isUpdateerror,
+    isPending: isCreateServicePending,
+    isSuccess: isCreateServiceSuccess,
+    isError: isCreateServiceError,
+    error: createServiceError,
   } = useCreateQuery();
 
   const accept = () => {
@@ -74,28 +97,7 @@ const ServiceCreate = () => {
     });
   };
 
-  interface Servicecreate {
-    month: Number;
-    year: Number;
-    title: string;
-    amount: Number;
-    users: Array<string>;
-    cancel_fee_percentage: Number;
-    expiry_date: string;
-    last_cancellation_date: string;
-    is_cancellable: boolean;
-    description: string;
-    maxPaid_count: Number;
-    maxCancelCount: Number;
-  }
-
-  interface Allnames {
-    name: string;
-    _id: string;
-    roll: string;
-  }
-
-  const Createser = async (value: any) => {
+  const preparePayloadAndCreateService = async (value: any) => {
     const serviceData: Servicecreate = {
       month: value.month || 0,
       year: value.year || 0,
@@ -110,34 +112,42 @@ const ServiceCreate = () => {
       description: value.description,
       maxPaid_count: value.max_enroll || 0,
     };
+    console.log(serviceData);
+    createService(serviceData);
+  };
 
-    try {
-      console.log(serviceData);
+  const form = formFactory.useForm({
+    defaultValues: { title: "", description: "" },
+    onSubmit: async ({ value }) => {
+      if (isCreateServicePending) return;
+      preparePayloadAndCreateService(value);
+    },
+  });
 
-      createService(serviceData);
+  useEffect(() => {
+    if (isCreateServiceSuccess) {
       toast.current?.show({
         severity: "success",
         summary: "Service Created",
         detail: "Service has been successfully created.",
         life: 3000,
       });
-    } catch (error) {
-      console.error("Error creating service:", error);
+      form.reset();
+    }
+  }, [form, isCreateServiceSuccess]);
+
+  useEffect(() => {
+    if (isCreateServiceError) {
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: "Failed to create service. Please try again later.",
+        detail:
+          createServiceError?.message ||
+          "Failed to create service. Please try again later.",
         life: 3000,
       });
     }
-  };
-
-  const form = formFactory.useForm({
-    defaultValues: { title: "", description: "" },
-    onSubmit: async ({ value }) => {
-      Createser(value);
-    },
-  });
+  }, [createServiceError?.message, isCreateServiceError]);
 
   const updateusers = () => {
     let x1 = 0;
@@ -527,10 +537,8 @@ const ServiceCreate = () => {
               <ConfirmPopup />
               <div className="flex gap-3" style={{ marginTop: "25px" }}>
                 <Button
-                  onClick={() => {
-                    form.handleSubmit();
-                  }}
-                  // onClick={confirm1}
+                  disabled={isCreateServicePending}
+                  type="submit"
                   icon="pi pi-check"
                   label="Confirm"
                 ></Button>
