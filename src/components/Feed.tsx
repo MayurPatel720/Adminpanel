@@ -202,7 +202,7 @@ export default function FloatLabelDemo() {
                 onUpload={onUpload}
                 multiple
                 accept="image/*"
-                maxFileSize={1000000}
+                maxFileSize={150000000}
                 onSelect={(e) => {
                   setFiles(e.files);
                 }}

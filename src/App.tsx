@@ -82,6 +82,8 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
+          <Route  path="/editgroup/:id" element={<EditGroups />}/>
+          <Route path="/editquiz/:id" element={<EditQuiz />}/>
             <Route path="/unauthorised" element={<Unauthorized />} />;
             {allowedRoutes.map((routeKey) => {
               switch (routeKey) {
@@ -149,22 +151,6 @@ function App() {
                       element={<AllGroups />}
                     />
                   );
-                case "editquiz":
-                  return (
-                    <Route
-                      key={routeKey}
-                      path="/editquiz/:id"
-                      element={<EditQuiz />}
-                    />
-                  );
-                case "editgroup":
-                  return (
-                    <Route
-                      key={routeKey}
-                      path="/editgroup/:id"
-                      element={<EditGroups />}
-                    />
-                  );
                 case "quizmarks":
                   return (
                     <Route
@@ -173,8 +159,6 @@ function App() {
                       element={<ShowMarks />}
                     />
                   );
-                // case "kao":
-                //   return <Route key={routeKey} path="/kao" element={<Kao />} />;
 
                 default:
                   return null;
