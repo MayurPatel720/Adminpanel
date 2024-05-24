@@ -6,9 +6,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import "../css/Allquiz.css";
 import Mainlayout from "../layout/Mainlayout";
+import QuizAttendendUser from "../components/QuizAttendendUser";
 import { DeleteQuiz, useAllQuiz } from "../queries/authentication";
 import EmptyView from "./EmptyView";
 import Loading from "./Loading";
+import { Sidebar } from "primereact/sidebar";
 
 interface QuizData {
   _id: string;
@@ -20,7 +22,14 @@ const QuizItem: React.FC<{ quiz: QuizData; onDelete: Function }> = ({
   onDelete,
 }) => {
   const [isDialogVisible, setDialogVisible] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const navigate = useNavigate();
+
+ const handlevisible = ()=>{
+    setVisible(true);
+    console.log(quiz._id);
+ }
+
 
   const handleEdit = async () => {
     navigate(`/editquiz/${quiz._id}`);
@@ -33,16 +42,22 @@ const QuizItem: React.FC<{ quiz: QuizData; onDelete: Function }> = ({
     setDialogVisible(true);
     onDelete(quiz._id);
   };
-  return (
+  return (  
     <div key={quiz._id} className="quiz-containeraquizlist">
       <p className="quiz-titlealq">{quiz.title}</p>
       <div style={{ display: "flex", flexDirection: "row" }}>
-        <Button onClick={handleEdit} style={{ margin: "18px" }}>
+        <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
+          <QuizAttendendUser id={quiz._id} />
+        </Sidebar>
+        <Button onClick={handlevisible} style={{ margin: "18px",marginRight:"0"}}>
+          USERS
+        </Button>
+        <Button onClick={handleEdit} style={{ margin: "18px",marginRight:"0" }}>
           EDIT
         </Button>
-        <div className="card flex flex-wrap gap-2 justify-content-center">
+        <div className="card flex flex-wrap justify-content-center">
           <Button
-            style={{ margin: "15px" }}
+            style={{ margin: "15px",marginLeft:"0"}}
             onClick={confirm1}
             label="DELETE"
             className="mr-2"
