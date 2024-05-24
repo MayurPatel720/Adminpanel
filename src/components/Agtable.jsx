@@ -112,7 +112,7 @@ function App({ sid }) {
     { field: "name" },
     { field: "roll" },
     { field: "paid_on" },
-    { field: "Cancel", cellRenderer: CustomButtonComponent, flex: 1 },
+    { field: "Cancel",cellRenderer: CustomButtonComponent, flex: 1 },
   ]);
 
   const onGridReady = (params) => {

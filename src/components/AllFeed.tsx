@@ -10,7 +10,9 @@ import "../css/Allfeed.css";
 import Mainlayout from "../layout/Mainlayout";
 import {
   DeletingFeed,
+  useFetchComments,
   useFetchFeedDataQuery,
+  useFetchlikes,
   useUpdateFeedMutation,
 } from "../queries/allda";
 import EmptyView from "./EmptyView";
@@ -21,14 +23,20 @@ interface FeedItem {
   title: string;
   description: string;
   level: string;
+  p: String;
+  s: String;
+  m: String;
   expires_at: string;
-
   attachments: any[];
   attachmentsToDelete: any[];
 }
 
 const AllFeed = () => {
+  const [selectedFeedId, setSelectedFeedId] = useState<string>("");
+  const [selectedlikeid, setSelectedlikeid] = useState<string>("");
   const [visibleRight, setVisibleRight] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [visiblelikes, setVisiblelikes] = useState<boolean>(false);
   const [editItemId, setEditItemId] = useState<string | null>(null);
   const [editedData, setEditedData] = useState<Partial<FeedItem>>({});
   const [selectedFile, setSelectedFile] = useState<Array<File>>([]);
@@ -37,6 +45,18 @@ const AllFeed = () => {
   const { isPending, data, isError, error, isSuccess } = useFetchFeedDataQuery({
     feedType: [selectedFeedType],
   });
+  const {
+    data: comments,
+    isPending: commentpending,
+    error: cerr,
+    isError: commenterror,
+  } = useFetchComments({ feedcomment: selectedFeedId });
+  const {
+    data: likesdata,
+    isPending: likespending,
+    error: likeserror,
+    isError: likeer,
+  } = useFetchlikes({ feedid: selectedlikeid });
 
   const queryClient = useQueryClient();
   const {
@@ -60,6 +80,15 @@ const AllFeed = () => {
     setVisibleRight(true);
   };
 
+  const handlecomments = (feedId: string) => {
+    setSelectedFeedId(feedId);
+    setVisible(true);
+  };
+  const handlelikesdata = (feedId: string) => {
+    setSelectedlikeid(feedId);
+    setVisiblelikes(true);
+  };
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setEditedData((prevData) => ({ ...prevData, [name]: value }));
@@ -72,7 +101,7 @@ const AllFeed = () => {
 
   const handleUpdateButtonClick = async (feedId: string) => {
     const formData = new FormData();
-    Array.from(selectedFile).forEach((file, index) => {
+    Array.from(selectedFile).forEach((file) => {
       formData.append(`FeedImgVi`, file, file.name);
     });
     formData.append("id", feedId);
@@ -221,8 +250,6 @@ const AllFeed = () => {
                 <option value="popular">Popular</option>
                 <option value="oldest">Oldest</option>
               </select>
-              {/* {JSON.stringify(data.data[0].users)} */}
-
               {data.data.map((feedItem: FeedItem, index: number) => (
                 <div key={feedItem._id} className="feed-item">
                   <div className="start_feed">
@@ -406,9 +433,75 @@ const AllFeed = () => {
                       >
                         {truncateDescription(feedItem.description, 30)}
                       </h5>
+                      <h4
+                        style={{
+                          marginBottom: "0",
+                          marginTop: "8px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        P : {feedItem.p} | S : {feedItem.s} | M : {feedItem.m}
+                      </h4>
                     </div>
                   </div>
                   <div className="third_feed">
+                    <Sidebar
+                      visible={visiblelikes}
+                      onHide={() => setVisiblelikes(false)}
+                      fullScreen
+                    >
+                      <h2 style={{ marginLeft: "40px" }}>Likes</h2>
+                      {likespending && (
+                        <div>
+                          <Loading />
+                        </div>
+                      )}
+
+                      <ul>
+                        {likesdata &&
+                          likesdata.data &&
+                          likesdata.data.map((like: any) => (
+                            <div key={like.id} className="comment-container">
+                              <p className="comment-name">
+                                {like.user_id.name}
+                              </p>
+                            </div>
+                          ))}
+                      </ul>
+                    </Sidebar>
+                    <Button
+                      icon="pi pi-thumbs-up"
+                      onClick={() => handlelikesdata(feedItem._id)}
+                    />
+                    <Sidebar
+                      visible={visible}
+                      onHide={() => setVisible(false)}
+                      fullScreen
+                    >
+                      <h2 style={{ marginLeft: "40px" }}>Comments</h2>
+                      {commentpending && (
+                        <div>
+                          <Loading />
+                        </div>
+                      )}
+                      {commenterror && <p>{cerr.message}</p>}
+                      <ul>
+                        {comments &&
+                          comments.data &&
+                          comments.data.map((comment: any) => (
+                            <div key={comment.id} className="comment-container">
+                              <p className="comment-name">
+                                {comment.roll} {comment.name}
+                              </p>
+                              <p className="comment-text">{comment.comment}</p>
+                            </div>
+                          ))}
+                      </ul>
+                    </Sidebar>
+                    <Button
+                      icon="pi pi-comments"
+                      onClick={() => handlecomments(feedItem._id)}
+                    />
                     <button
                       onClick={() => {
                         handleEditButtonClick(feedItem._id);
@@ -420,6 +513,7 @@ const AllFeed = () => {
                     </button>
                     <ConfirmPopup />
                     <Button
+                      style={{ backgroundColor: "#d00000", border: "0" }}
                       onClick={() => confirm(feedItem)}
                       icon="pi pi-times"
                       label="Delete"
