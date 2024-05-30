@@ -687,6 +687,7 @@ const Quiz: React.FC<QuizProps> = () => {
   }, [isQuizSuccess]);
   const adddata = () => {
     if (!starttime || !endtime) return;
+    console.log(starttime.toISOString(), endtime.toISOString());
 
     quizadd({
       title: title,
@@ -699,6 +700,7 @@ const Quiz: React.FC<QuizProps> = () => {
     // navigate("/AllQuiz");
   };
   const Submittodatabase = () => {
+    console.log(starttime ? starttime.toISOString() : "");
     let x = 0;
     for (let index = 0; index < all.length; index++) {
       const data = all[index];
