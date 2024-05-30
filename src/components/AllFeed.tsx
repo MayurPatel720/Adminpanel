@@ -45,6 +45,7 @@ const AllFeed = () => {
   const { isPending, data, isError, error, isSuccess } = useFetchFeedDataQuery({
     feedType: [selectedFeedType],
   });
+
   const {
     data: comments,
     isPending: commentpending,
@@ -104,6 +105,7 @@ const AllFeed = () => {
     Array.from(selectedFile).forEach((file) => {
       formData.append(`FeedImgVi`, file, file.name);
     });
+
     formData.append("id", feedId);
     formData.append("title", editedData.title || "");
     formData.append("description", editedData.description || "");

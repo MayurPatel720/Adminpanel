@@ -9,7 +9,7 @@ import apiClient from "../utils/apiClient";
 
 const fetchData: Function = async (feedtype: string[]) => {
   const res = await apiClient.get(
-    `api/feed/getAllVisibleFeeds?feedVisibileType=${feedtype.join(",")}`
+    `api/feed/getAllVisibleFeedForAdmin?feedVisibileType=${feedtype.join(",")}`
   );
   return res.data;
 };
@@ -26,7 +26,7 @@ const fetchComments: Function = async (feedtype: string) => {
 
 const fetchlikes: Function = async (feedId: string) => {
   console.log(feedId);
-  
+
   const res = await apiClient.get(
     // `api/comment/getCommentByFeedId/${feedtype.join(",")}`
     `api/feed/getLikedUser/${feedId}`

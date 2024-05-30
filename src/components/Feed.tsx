@@ -37,6 +37,9 @@ export default function FloatLabelDemo() {
   ];
 
   const confirm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(typeof expiresAt, expiresAt?.toUTCString());
+    console.log(expiresAt ? expiresAt.toISOString() : "");
+    console.log(expiresAt ? expiresAt.toLocaleString() : "");
     confirmPopup({
       target: event.currentTarget,
       message: "Are you sure you want to proceed?",
@@ -84,18 +87,20 @@ export default function FloatLabelDemo() {
   };
 
   const cities: City[] =
-    data?.data?.map((item: { name: string; _id: string; url: string; roll:any }) => ({
-      // name: item.name,
-      name: item.roll + " " + item.name,
-      roll:item.roll,
-      _id: item._id,
-      url: item.url,
-    })) || [];
+    data?.data?.map(
+      (item: { name: string; _id: string; url: string; roll: any }) => ({
+        // name: item.name,
+        name: item.roll + " " + item.name,
+        roll: item.roll,
+        _id: item._id,
+        url: item.url,
+      })
+    ) || [];
 
   interface City {
     url: string;
     name: string;
-    roll:string;
+    roll: string;
     _id: string;
   }
 
@@ -190,7 +195,12 @@ export default function FloatLabelDemo() {
               inputId="expiry"
               value={expiresAt}
               dateFormat="dd/mm/yy"
-              onChange={(e) => setExpiresAt(e.value as Date)}
+              onChange={(e) => {
+                console.log(e.value as Date);
+                console.log(e.target.value as Date);
+
+                setExpiresAt(e.value as Date);
+              }}
             ></Calendar>
             <label htmlFor="expiry">Expiry at</label>
           </span>

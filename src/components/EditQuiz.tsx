@@ -148,8 +148,8 @@ const EditQuiz: React.FC<QuizProps> = () => {
     // if (all.length) return;
     if (!quizdata || !quizdata.data.questions || isLoading) return;
     setTitle(quizdata.data.title);
-    setEndTime(new Date(quizdata.data.start_time));
-    setStartTime(new Date(quizdata.data.end_time));
+    setStartTime(new Date(quizdata.data.start_time));
+    setEndTime(new Date(quizdata.data.end_time));
     const newArray = (quizdata.data.questions as QuestionItem[]).map(
       (questionItem) => ({
         question: questionItem.question,
@@ -178,7 +178,7 @@ const EditQuiz: React.FC<QuizProps> = () => {
       const temp = abc.map((d: { roll: string }) => d.roll);
       setNum(temp);
       setSelectedNames(abc);
-      console.log(num, selectedNames);
+      // console.log(num, selectedNames);
     }
     setAll(newArray);
   };
