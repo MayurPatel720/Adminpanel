@@ -13,6 +13,7 @@ import Mainlayout from "../layout/Mainlayout";
 import {
   AddQuiz,
   useAllGroupbyId,
+  useAllGroupbyIdforQuiz,
   useAllGroups,
 } from "../queries/authentication";
 import { useGetalluser } from "../queries/feed";
@@ -54,13 +55,19 @@ const Quiz: React.FC<QuizProps> = () => {
       name: item.roll + " " + item.name,
       _id: item._id,
     })) || [];
+  interface Group {
+    _id: string;
+    name: string;
+  }
+  const [selectedGroupId, setSelectedGroupId] = useState<Group[]>([]);
 
-  const [selectedGroupId, setSelectedGroupId] = useState("");
   const {
     data: selectedGroupUsers,
     isPending: selectedGroupUsersLoading,
     isSuccess: selectedGroupSuccess,
-  } = useAllGroupbyId(selectedGroupId, selectedGroupId != "");
+  } = useAllGroupbyIdforQuiz(selectedGroupId, selectedGroupId.length > 0);
+  console.log(selectedGroupUsers);
+
   // console.log(selectedGroupUsers?.data);
   // const groupUpdate = async () => {
   //   if (selectedGroupId == "") {
@@ -284,17 +291,27 @@ const Quiz: React.FC<QuizProps> = () => {
   //   }
   // }, [selectedGroupSuccess]);
   useEffect(() => {
-    setSelectedNames(
-      (selectedGroupUsers?.data?.users || []).map((user: any) => ({
-        roll: user.roll,
-        name: user.roll + " " + user.name,
-        _id: user._id,
-      }))
-    );
-    setNum(
-      (selectedGroupUsers?.data?.users || []).map((user: any) => user.roll)
-    );
-  }, [selectedGroupUsers?.data?.users]);
+    // Check if selectedGroupUsers has elements
+    if (selectedGroupUsers && selectedGroupUsers.length > 0) {
+      const updatedSelectedNames = selectedGroupUsers
+        .map((groupResult: any) =>
+          groupResult.data.users.map((user: any) => ({
+            roll: user.roll,
+            name: `${user.roll} ${user.name}`,
+            _id: user._id,
+          }))
+        )
+        .flat();
+
+      const updatedNum = selectedGroupUsers.flatMap((groupResult: any) =>
+        groupResult.data.users.map((user: any) => user.roll)
+      );
+
+      setSelectedNames(updatedSelectedNames);
+      setNum(updatedNum);
+    }
+  }, [selectedGroupUsers]);
+
   // useEffect(() => {
   //   // console.log(
   //   //   "IS LOADING: ",
@@ -861,14 +878,16 @@ const Quiz: React.FC<QuizProps> = () => {
                 <div style={{ marginRight: "100px" }}>
                   <ListBox
                     filter
+                    multiple
                     value={selectedgroup}
                     onChange={(e) => {
+                      // console.log(e.value);
                       setSelectedgroup(e.value);
-                      if (e.value == null || e.value?._id == "all") {
-                        setSelectedGroupId("");
-                        setSelectedgroup([]);
+                      if (e.value == null || e.value[0]?._id == "all") {
+                        // setSelectedGroupId("");
+                        // setSelectedgroup([]);
                         if (e.value == null && fla == "10") {
-                          setSelectedGroupId("");
+                          setSelectedGroupId([]);
                           setSelectedgroup([]);
                           setSelectedNames([]);
                           setNum([]);
@@ -880,9 +899,9 @@ const Quiz: React.FC<QuizProps> = () => {
                           setNum(allUsers.map((user) => user.roll));
                         }
                       } else {
-                        setSelectedGroupId("");
-                        setSelectedGroupId(e.value ? e.value._id : "");
-                        console.log("id of selectedgroup ", selectedGroupId);
+                        setSelectedGroupId([]);
+                        setSelectedGroupId(e.value);
+                        // console.log("id of selectedgroup ", selectedGroupId);
                       }
                       // groupUpdate();
                     }}
@@ -933,13 +952,13 @@ const Quiz: React.FC<QuizProps> = () => {
                     <ListBox
                       filter
                       multiple
-                      value={(selectedGroupUsers?.data?.users || [])
-                        .map((user: any) => ({
-                          roll: user.roll,
-                          name: user.roll + " " + user.name,
-                          _id: user._id,
-                        }))
-                        .concat(selectedNames || [])}
+                      // value={(selectedGroupUsers?.data?.users || [])
+                      //   .map((user: any) => ({
+                      //     roll: user.roll,
+                      //     name: user.roll + " " + user.name,
+                      //     _id: user._id,
+                      //   }))
+                      //   .concat(selectedNames || [])}
                       onChange={(e) => {
                         const uniqueValues = e.value.filter(
                           (v: any, i: any, a: any) =>
@@ -950,6 +969,7 @@ const Quiz: React.FC<QuizProps> = () => {
                         const temp = curr.map((d: { roll: string }) => d.roll);
                         setNum(temp);
                       }}
+                      value={selectedNames}
                       options={allUsers}
                       optionLabel="name"
                       className="w-full"

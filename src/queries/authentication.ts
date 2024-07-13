@@ -149,6 +149,21 @@ const fetchGroupById: any = async (id: string) => {
   const res = await apiClient.get(`api/group/getGroupById/${id}`);
   return res.data;
 };
+interface Group {
+  _id: string;
+  name: string;
+}
+const fetchGroupByIdforQuiz = async (ids: Group[]): Promise<any[]> => {
+  // string
+  // console.log("call", ids);
+  const responses = await Promise.all(
+    ids.map((group) => apiClient.get(`api/group/getGroupById/${group._id}`))
+  );
+  // console.log(responses);
+
+  return responses.map((response) => response.data);
+};
+
 const fetchdeleteQuiz: MutationFunction<ApiResponse<any>, QuizDelete> = async ({
   id,
 }: QuizDelete) => {
@@ -221,6 +236,12 @@ export const useAllGroupbyId = (id?: string, enabled?: boolean) =>
     queryKey: ["allQuizbyId", id], // Assuming getQuizeById is defined
     enabled: enabled || false,
     queryFn: () => fetchGroupById(id),
+  });
+export const useAllGroupbyIdforQuiz = (ids: Group[], enabled?: boolean) =>
+  useQuery({
+    queryKey: ["allQuizbyIdforQuiz", ids], // Assuming getQuizeById is defined
+    enabled: enabled || false,
+    queryFn: () => fetchGroupByIdforQuiz(ids),
   });
 const updateQuizById: MutationFunction<
   ApiResponse<any>,
