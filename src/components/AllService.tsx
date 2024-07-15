@@ -5,7 +5,7 @@ import { InputSwitch } from "primereact/inputswitch";
 import { InputText } from "primereact/inputtext";
 import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../css/AllService.css";
 import Mainlayout from "../layout/Mainlayout";
 import {
@@ -54,7 +54,7 @@ const AllService = () => {
   );
   const { data, isPending, isError, error, isSuccess } = useServiceQuery();
 
-  const [num, setNum] = useState<string[]>([]);
+  const [num, setNum] = useState<any[]>([]);
   const [selectedNames, setSelectedNames] = useState<Allnames[]>([]);
   const [extra, setExtra] = useState<string>("");
   interface Allnames {
@@ -69,44 +69,75 @@ const AllService = () => {
       _id: item._id,
     })) || [];
 
+  // const updateusers = () => {
+  //   let x1 = 0;
+  //   let x2 = 0;
+  //   let i = 0;
+  //   while (i < extra.length) {
+  //     if (extra[i] > "9" && extra[i] < "0" && extra[i] != "-") {
+  //       setExtra("");
+  //       return;
+  //     }
+  //     i++;
+  //   }
+  //   i = 0;
+  //   while (i < extra.length) {
+  //     if (extra[i] <= "9" && extra[i] >= "0") {
+  //       let t = parseInt(extra[i]);
+  //       // console.log("t", t);
+
+  //       x1 = x1 * 10 + t;
+  //     } else {
+  //       i++;
+  //       break;
+  //     }
+  //     i++;
+  //   }
+  //   while (i < extra.length) {
+  //     if (extra[i] <= "9" && extra[i] >= "0") {
+  //       let t = parseInt(extra[i]);
+  //       x2 = x2 * 10 + t;
+  //     } else {
+  //       i++;
+  //       break;
+  //     }
+  //     i++;
+  //   }
+
+  //   for (let i = x1; i <= x2; i++) {
+  //     setNum((prev) => [...prev, i.toString()]);
+  //   }
+  // };
   const updateusers = () => {
-    let x1 = 0;
-    let x2 = 0;
-    let i = 0;
-    while (i < extra.length) {
-      if (extra[i] > "9" && extra[i] < "0" && extra[i] != "-") {
-        setExtra("");
-        return;
-      }
-      i++;
-    }
-    i = 0;
-    while (i < extra.length) {
-      if (extra[i] <= "9" && extra[i] >= "0") {
-        let t = parseInt(extra[i]);
-        // console.log("t", t);
+  
+    setNum([]);
 
-        x1 = x1 * 10 + t;
-      } else {
-        i++;
-        break;
-      }
-      i++;
-    }
-    while (i < extra.length) {
-      if (extra[i] <= "9" && extra[i] >= "0") {
-        let t = parseInt(extra[i]);
-        x2 = x2 * 10 + t;
-      } else {
-        i++;
-        break;
-      }
-      i++;
-    }
+    const entries = extra.split(",");
 
-    for (let i = x1; i <= x2; i++) {
-      setNum((prev) => [...prev, i.toString()]);
-    }
+    entries.forEach((entry) => {
+      
+      if (entry.includes("-")) {
+        const [start, end] = entry
+          .split("-")
+          .map((e) => parseInt(e.trim(), 10));
+
+      
+        if (!isNaN(start) && !isNaN(end) && start <= end) {
+       
+          for (let i = start; i <= end; i++) {
+            setNum((prev) => [...prev, i.toString()]);
+          }
+        }
+      } else {
+       
+        const number = parseInt(entry.trim(), 10);
+        if (!isNaN(number)) {
+          setNum((prev) => [...prev, number.toString()]);
+        }
+      }
+    });
+
+    setExtra("");
   };
 
   const handleEdit = (service: Service) => {
@@ -123,6 +154,15 @@ const AllService = () => {
     setVisible(true);
     setSelectedServiceId(id);
   };
+
+  useEffect(() => {
+    const mergedUsers = [...new Set([...num, ...(editedService?.users ?? [])])];
+    setEditedService({
+      ...editedService!,
+      users: mergedUsers,
+    });
+    console.log(mergedUsers);
+  }, [num]);
 
   const handleSave = async () => {
     const Servicedata: Service = {
@@ -204,7 +244,7 @@ const AllService = () => {
                       fullScreen
                     >
                       <h2 style={{ marginTop: "0px" }}>
-                      Paid Users of this {service.title}
+                        Paid Users of this {service.title}
                       </h2>
                       <Agtable sid={selectedServiceId} />
                     </Sidebar>
@@ -225,14 +265,16 @@ const AllService = () => {
               </div>
             ))}
             <Sidebar
-              style={{ width: "35%" }}
+              style={{ width: "40%" }}
               visible={visibleRight}
               position="right"
               onHide={() => setVisibleRight(false)}
             >
-              <h2>Updating Fields</h2>
+              <h2 style={{ marginBottom: "64px" }}>Updating Fields</h2>
               <div className="sideaa">
-                <label className="labelll" htmlFor="title">TITLE</label>
+                <label className="labelll" htmlFor="title">
+                  TITLE
+                </label>
                 <input
                   type="text"
                   id="title"
@@ -244,7 +286,9 @@ const AllService = () => {
                     })
                   }
                 />
-                <label className="labelll" htmlFor="description">description</label>
+                <label className="labelll" htmlFor="description">
+                  description
+                </label>
                 <textarea
                   id="description"
                   value={editedService?.description}
@@ -255,7 +299,9 @@ const AllService = () => {
                     })
                   }
                 />
-                  <label className="labelll" htmlFor="Month">Month</label>
+                <label className="labelll" htmlFor="Month">
+                  Month
+                </label>
                 <select>
                   {months.map((item, index) => (
                     <option
@@ -267,7 +313,9 @@ const AllService = () => {
                     </option>
                   ))}
                 </select>
-                <label className="labelll" htmlFor="Year">Year</label>
+                <label className="labelll" htmlFor="Year">
+                  Year
+                </label>
                 <select>
                   {years.map((item, index) => (
                     <option
@@ -279,9 +327,11 @@ const AllService = () => {
                     </option>
                   ))}
                 </select>
-                <label className="labelll" htmlFor="num">ID NO</label>
+                <label className="labelll" htmlFor="num">
+                  ID NO
+                </label>
                 <InputText
-                id="num"
+                  id="num"
                   onChange={(e) => {
                     setExtra(e.target.value);
                   }}
@@ -289,16 +339,13 @@ const AllService = () => {
 
                 <button onClick={() => updateusers()}>press</button>
                 <Chips
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
                   value={num}
                   onChange={(e) => {
-                    setNum(e.value ? e.value : []);
-                    const curr = e.value;
+                    const curr: string[] = e.value ?? [];
+                    setNum(curr);
+
                     const abc: Allnames[] = [];
-                    curr?.map((d) => {
+                    curr.forEach((d) => {
                       for (let i = 0; i < allUsers.length; i++) {
                         if (allUsers[i].roll === d) {
                           abc.push({
@@ -309,12 +356,7 @@ const AllService = () => {
                         }
                       }
                     });
-                    setEditedService({
-                      ...editedService!,
-                      users: e.value ?? [],
-                    });
                     setSelectedNames(abc);
-                    console.log(editedService);
                   }}
                   separator=","
                 />
@@ -327,9 +369,11 @@ const AllService = () => {
                     })
                   }
                 />
-                <label className="labelll" htmlFor="date">expiry_date</label>
+                <label className="labelll" htmlFor="date">
+                  expiry_date
+                </label>
                 <input
-                id="expiry_date"
+                  id="expiry_date"
                   type="date"
                   value={
                     editedService?.expiry_date
@@ -345,7 +389,9 @@ const AllService = () => {
                     })
                   }
                 />
-                <label className="labelll" htmlFor="last_cancellation_date">last_cancellation_date</label>
+                <label className="labelll" htmlFor="last_cancellation_date">
+                  last_cancellation_date
+                </label>
                 <input
                   id="last_cancellation_date"
                   type="date"
@@ -377,7 +423,9 @@ const AllService = () => {
                     checked={checkeda}
                   />
                 </span>
-                <label className="labelll" htmlFor="cancel_fee_percentage">cancel_fee_percentage</label>
+                <label className="labelll" htmlFor="cancel_fee_percentage">
+                  cancel_fee_percentage
+                </label>
                 <input
                   id="cancel_fee_percentage"
                   type="number"
@@ -394,9 +442,11 @@ const AllService = () => {
                     })
                   }
                 />
-                <label className="labelll" htmlFor="maxPaid_count">maxPaid_count</label>
+                <label className="labelll" htmlFor="maxPaid_count">
+                  maxPaid_count
+                </label>
                 <input
-                id="maxPaid_count"
+                  id="maxPaid_count"
                   type="number"
                   value={
                     editedService?.maxPaid_count !== undefined
@@ -411,9 +461,11 @@ const AllService = () => {
                     })
                   }
                 />
-                <label className="labelll" htmlFor="maxCancelCount">maxCancelCount</label>
+                <label className="labelll" htmlFor="maxCancelCount">
+                  maxCancelCount
+                </label>
                 <input
-                id="maxCancelCount"
+                  id="maxCancelCount"
                   type="number"
                   value={
                     editedService?.maxCancelCount !== undefined
@@ -447,7 +499,6 @@ const AllService = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  // Loading
   return (
     <Mainlayout>
       <Loading />
