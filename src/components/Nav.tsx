@@ -1,8 +1,8 @@
 import { Avatar } from "primereact/avatar";
 import { Menubar } from "primereact/menubar";
 import { MenuItem } from "primereact/menuitem";
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/Nav.css";
 
 interface Item {
@@ -17,7 +17,8 @@ interface Item {
 }
 
 const TemplateDemo: React.FC = () => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
+  const [visiblesidebar,notvisiblesidebar] = useState(false);
 
   const itemRenderer = (item: MenuItem) => (
     <a className="flex align-items-center p-menuitem-link">
@@ -106,13 +107,25 @@ const TemplateDemo: React.FC = () => {
         image="https://cdn-icons-png.freepik.com/256/747/747376.png?ga=GA1.1.891391406.1713304355&semt=ais_hybrid"
         shape="circle"
       />
+      <div className="as">
+      <Avatar className="hamburger"
+        onClick={() => {
+          
+          
+        }}
+        image="https://cdn1.iconfinder.com/data/icons/social-messaging-ui-color/254000/30-512.png"
+        shape="circle"
+      />
+      </div>
     </div>
   );
 
   return (
+    <>
     <div className="card" style={{ padding: "0px" }}>
-      <Menubar model={items} start={start} end={end} />
+      <Menubar style={{width: "100%"}} model={items} start={start} end={end} />
     </div>
+      </>
   );
 };
 
