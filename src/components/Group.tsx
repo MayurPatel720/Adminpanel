@@ -55,40 +55,69 @@ const Group: React.FC<QuizProps> = () => {
       name: title,
     });
   };
+  const [flag, setFlag] = useState(0);
+  // useEffect(() => {
+  //   if(flag==0){
+
+  //   }
+  //   const uniqueNum = Array.from(new Set(num));
+
+  //   setNum(uniqueNum);
+  //   const curr = num;
+
+  //   const abc: Allnames[] = [];
+  //   curr.forEach((d) => {
+  //     for (let i = 0; i < allUsers.length; i++) {
+  //       if (allUsers[i].roll === d) {
+  //         abc.push({
+  //           name: allUsers[i].name,
+  //           _id: allUsers[i]._id,
+  //           roll: allUsers[i].roll,
+  //         } as Allnames);
+  //       }
+  //     }
+  //   });
+
+  //   setSelectedNames(abc);
+  // }, [num]);
   const updateusers = () => {
     let a1 = "";
     const newValues: string[] = [];
 
+    // Accumulate values from 'extra' separated by commas
     for (let i = 0; i < extra.length; i++) {
       if (extra[i] === ",") {
-        newValues.push(a1);
-        a1 = ""; // Reset a1 after pushing it to newValues
+        newValues.push(a1.trim()); // Push accumulated value to newValues array
+        a1 = ""; // Reset accumulator for next value
       } else {
-        a1 += extra[i]; // Accumulate characters in a1
+        a1 += extra[i]; // Accumulate characters to form a value
       }
     }
-    // Handle the final segment after the loop ends
+
+    // Push the last accumulated value after loop ends
     if (a1 !== "") {
-      newValues.push(a1);
+      newValues.push(a1.trim());
     }
 
     // Update the state once with all accumulated values
     setNum((prev) => {
       const updatedNum = [...prev, ...newValues];
-      // Update selectedNames based on the new num values
-      const curr = updatedNum;
-      const abc: Allnames[] = [];
-      curr?.forEach((d) => {
-        for (let i = 0; i < allUsers.length; i++) {
-          if (allUsers[i].roll === d) {
-            abc.push({
-              name: allUsers[i].name,
-              _id: allUsers[i]._id,
-              roll: allUsers[i].roll,
-            } as Allnames);
-          }
-        }
+
+      // Use a Map for efficient lookup
+      const userMap = new Map<string, Allnames>();
+      allUsers.forEach((user) => {
+        userMap.set(user.roll, {
+          name: user.name,
+          _id: user._id,
+          roll: user.roll,
+        });
       });
+
+      // Update selectedNames based on the new num values
+      const abc: Allnames[] = updatedNum
+        .map((roll) => userMap.get(roll)!)
+        .filter(Boolean);
+
       setSelectedNames(abc);
       return updatedNum;
     });
