@@ -1,5 +1,6 @@
 import { Button } from "primereact/button";
-import { Chips, ChipsChangeEvent } from "primereact/chips";
+import { Chips } from "primereact/chips";
+import { ChipsChangeEvent } from "primereact/chips";
 import { InputText } from "primereact/inputtext";
 import { ListBox } from "primereact/listbox";
 import { Toast } from "primereact/toast";
@@ -18,6 +19,7 @@ interface Allnames {
 const Group: React.FC<QuizProps> = () => {
   const { data } = useGetalluser();
   const [num, setNum] = useState<string[]>([]);
+  const [extra, setExtra] = useState("");
   const [title, setTitle] = useState("");
   const toast = useRef<Toast | null>(null);
   const [selectedNames, setSelectedNames] = useState<Allnames[]>([]);
@@ -53,7 +55,46 @@ const Group: React.FC<QuizProps> = () => {
       name: title,
     });
   };
+  const updateusers = async () => {
+    let a1 = "";
+    const newValues: string[] = [];
 
+    for (let i = 0; i < extra.length; i++) {
+      if (extra[i] === ",") {
+        newValues.push(a1);
+        a1 = ""; // Reset a1 after pushing it to newValues
+      } else {
+        a1 += extra[i]; // Accumulate characters in a1
+      }
+    }
+    // Handle the final segment after the loop ends
+    if (a1 !== "") {
+      newValues.push(a1);
+    }
+
+    // Update the state once with all accumulated values
+    await setNum((prev) => [...prev, ...newValues]);
+    console.log(num.length);
+
+    const curr = num;
+    const abc: Allnames[] = [];
+    curr?.map((d) => {
+      for (let i = 0; i < allUsers.length; i++) {
+        if (allUsers[i].roll === d) {
+          abc.push({
+            name: allUsers[i].name,
+            _id: allUsers[i]._id,
+            roll: allUsers[i].roll,
+          } as Allnames);
+        }
+      }
+    });
+    // console.log(abc);
+    // console.log(num);
+
+    setSelectedNames(abc);
+    // console.log(selectedNames);
+  };
   return (
     <Mainlayout>
       <div className="feed_container">
@@ -73,6 +114,16 @@ const Group: React.FC<QuizProps> = () => {
           </div>
           <div style={{ marginTop: "40px" }}>
             <label htmlFor="question">Users Able to Attend Quiz</label>
+            <InputText
+              onChange={(e) => {
+                setExtra(e.target.value ? e.target.value : "");
+                // console.log(e.target.value);
+              }}
+            />
+            <button style={{ marginTop: "10px" }} onClick={() => updateusers()}>
+              Press For Adding Above Users
+            </button>
+
             <Chips
               style={{
                 display: "flex",
