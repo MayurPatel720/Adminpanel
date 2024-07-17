@@ -55,7 +55,7 @@ const Group: React.FC<QuizProps> = () => {
       name: title,
     });
   };
-  const updateusers = async () => {
+  const updateusers = () => {
     let a1 = "";
     const newValues: string[] = [];
 
@@ -73,28 +73,27 @@ const Group: React.FC<QuizProps> = () => {
     }
 
     // Update the state once with all accumulated values
-    await setNum((prev) => [...prev, ...newValues]);
-    console.log(num.length);
-
-    const curr = num;
-    const abc: Allnames[] = [];
-    curr?.map((d) => {
-      for (let i = 0; i < allUsers.length; i++) {
-        if (allUsers[i].roll === d) {
-          abc.push({
-            name: allUsers[i].name,
-            _id: allUsers[i]._id,
-            roll: allUsers[i].roll,
-          } as Allnames);
+    setNum((prev) => {
+      const updatedNum = [...prev, ...newValues];
+      // Update selectedNames based on the new num values
+      const curr = updatedNum;
+      const abc: Allnames[] = [];
+      curr?.forEach((d) => {
+        for (let i = 0; i < allUsers.length; i++) {
+          if (allUsers[i].roll === d) {
+            abc.push({
+              name: allUsers[i].name,
+              _id: allUsers[i]._id,
+              roll: allUsers[i].roll,
+            } as Allnames);
+          }
         }
-      }
+      });
+      setSelectedNames(abc);
+      return updatedNum;
     });
-    // console.log(abc);
-    // console.log(num);
-
-    setSelectedNames(abc);
-    // console.log(selectedNames);
   };
+
   return (
     <Mainlayout>
       <div className="feed_container">
