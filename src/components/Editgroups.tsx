@@ -40,8 +40,8 @@ const EditGroups: React.FC<QuizProps> = () => {
     isLoading,
     isPending,
     isSuccess,
-  } = useAllGroupbyId(id);
-  // console.log(data);
+  } = useAllGroupbyId(id, !!id);
+  // console.log(groupdata);
 
   const {
     mutate: GroupUpdate,
@@ -54,7 +54,8 @@ const EditGroups: React.FC<QuizProps> = () => {
   //   );
   //   setNum(sortedUniqueNum);
   // }, [num]);
-  console.log(groupdata);
+  // console.log(groupdata);
+  // console.log(id);
 
   const [f, setF] = useState(0);
   useEffect(() => {
