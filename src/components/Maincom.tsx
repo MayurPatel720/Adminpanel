@@ -6,7 +6,7 @@ const Maincom = () => {
     <>
       <Mainlayout>
         <div className="container">
-          <h1>Welcome to the Frontend Team!</h1>
+          <h1>Welcome to the Avashyakam Admin Panel</h1>
           <p>
             We're excited to have you on board. Let's create awesome user
             experiences together.
