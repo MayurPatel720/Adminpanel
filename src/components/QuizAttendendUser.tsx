@@ -1,8 +1,11 @@
 import { AgGridReact } from "ag-grid-react";
 import { useQuizTabledata } from "../queries/Quizuser";
 import { useMemo, useState } from "react";
+import { GridApi } from "ag-grid-community";
 
 const QuizAttendendUser = ({ id }: { id: any }) => {
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
   const {
     data,
     isPending: likespending,
@@ -24,18 +27,34 @@ const QuizAttendendUser = ({ id }: { id: any }) => {
     };
   }, []);
 
-//   const onExportClick = () => {
-//     if (gridApi) {
-//       gridApi.exportDataAsCsv();
-//     } else {
-//       console.error("Grid is not ready yet.");
-//     }
-//   };
+  const onGridReady = (params: any) => {
+    setGridApi(params.api);
+  };
+
+  const onExportClick = () => {
+    if (gridApi) {
+      gridApi.exportDataAsCsv();
+    } else {
+      console.error("Grid is not ready yet.");
+    }
+  };
 
   return (
     <>
       <h2 style={{ marginLeft: "20px" }}>ATTENDED QUIZ USERS</h2>
       <div className="ag-theme-alpine-dark" style={{ height: "80vh" }}>
+        <button
+          className="edit-button"
+          style={{
+            position: "relative",
+            top: "-10px",
+            left: "95%",
+            fontWeight: "800",
+          }}
+          onClick={() => onExportClick()}
+        >
+          Export
+        </button>
         <AgGridReact
           rowData={data}
           columnDefs={colDefs}
@@ -43,6 +62,7 @@ const QuizAttendendUser = ({ id }: { id: any }) => {
           pagination={true}
           paginationPageSize={10}
           rowSelection="multiple"
+          onGridReady={onGridReady}
         />
       </div>
     </>
